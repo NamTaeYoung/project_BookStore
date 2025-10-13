@@ -32,7 +32,6 @@
         <a href="loan.jsp" class="menu-link">대출 현황 & 기록</a>
         <a href="edit.jsp" class="menu-link">정보 수정</a>
         <a href="password.jsp" class="menu-link">비밀번호 변경</a>
-        <a href="wishlist.jsp" class="menu-link">위시리스트</a>
         <a href="withdraw.jsp" class="menu-link">회원탈퇴</a>
     </div>
 
@@ -68,3 +67,4 @@
     </div>
 </body>
 </html>
+
