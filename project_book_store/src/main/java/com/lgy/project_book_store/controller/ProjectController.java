@@ -2,14 +2,21 @@ package com.lgy.project_book_store.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.lgy.project_book_store.dto.ProjectDTO;
-import com.lgy.project_book_store.service.ProjectServicelmpl;
+import com.lgy.project_book_store.dao.CartDAO;
+import com.lgy.project_book_store.dto.CartDTO;
+import com.lgy.project_book_store.dto.UserDTO;
+import com.lgy.project_book_store.service.UserServicelmpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProjectController {
 	@Autowired
-	private ProjectServicelmpl service;
+	private UserServicelmpl service;
     
     @Autowired
     private SqlSession sqlSession;
@@ -33,7 +40,7 @@ public class ProjectController {
 	@RequestMapping("/login_yn")
 	public String login_yn(@RequestParam HashMap<String, String> param) {
 		log.info("@# login_yn()");
-		ArrayList<ProjectDTO> dtos = service.loginYn(param);
+		ArrayList<UserDTO> dtos = service.loginYn(param);
 //		아이디와 비밀번호가 일치
 		if (dtos.isEmpty()) {
 			return "login";
@@ -92,5 +99,3 @@ public class ProjectController {
         return "MyPage/withdraw";
     }
 }
-
-
