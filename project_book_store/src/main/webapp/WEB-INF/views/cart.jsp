@@ -141,63 +141,106 @@
 	window.onload = () => {
 	    updateSummary();
 	}
+	
+	function prepareOrder() {
+	    const form = document.getElementById('orderForm');
+
+	    // 기존 동적 input 제거
+	    const existingInputs = form.querySelectorAll('.dynamic-input');
+	    existingInputs.forEach(el => el.remove());
+
+	    const rows = document.querySelectorAll('.cart-row');
+	    let checkedCount = 0;
+
+	    rows.forEach(row => {
+	        const checkbox = row.querySelector('.select-item');
+	        if (checkbox.checked) {
+	            checkedCount++;
+	            const bookId = checkbox.value;
+	            const quantity = row.querySelector('.quantity').value;
+
+	            const inputBookId = document.createElement('input');
+	            inputBookId.type = 'hidden';
+	            inputBookId.name = 'book_id';
+	            inputBookId.value = bookId;
+	            inputBookId.classList.add('dynamic-input');
+
+	            const inputQuantity = document.createElement('input');
+	            inputQuantity.type = 'hidden';
+	            inputQuantity.name = 'quantity';
+	            inputQuantity.value = quantity;
+	            inputQuantity.classList.add('dynamic-input');
+
+	            form.appendChild(inputBookId);
+	            form.appendChild(inputQuantity);
+	        }
+	    });
+
+	    if (checkedCount === 0) {
+	        alert("주문할 상품을 선택해주세요.");
+	        return false;
+	    }
+
+	    return true;
+	}
+
 </script>
 </head>
 <body>
-
-	<form class="cart-container" method="post" action="/cart">
-		<h2>장바구니</h2>
-		<div style="text-align: right; margin-bottom: 10px;">
-			<button type="button" onclick="deleteSelectedItems()"
-				style="background-color: #b94e4e; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-				선택 삭제
-			</button>
-		</div>
-		<table>
-		    <tr>
-		        <th><input type="checkbox"
-		            onclick="document.querySelectorAll('.select-item').forEach(cb => cb.checked = this.checked); updateSummary();"></th>
-		        <th>상품정보</th>
-		        <th>수량</th>
-		        <th>가격</th>
-		    </tr>
-		
-		    <c:forEach var="item" items="${cartList}">
-			    <tr class="cart-row">
-			        <td><input type="checkbox" class="select-item" checked onchange="updateSummary()"></td>
-			        <td class="product-info">
-			            <img src="${item.book.book_image_path != null ? item.book.book_image_path : '/resources/images/default-book.png'}" alt="${item.book.book_title}">
-			            <span>${item.book.book_title}</span>
-			        </td>
-			        <td>
-			            <input type="number" class="quantity" value="${item.quantity}" min="1" onchange="updatePrice(this.closest('tr'))">
-			        </td>
-			        <td class="unit-price" data-price="${item.book.book_price}">
-			            <span class="total-price">${item.book.book_price * item.quantity}원</span>
-			        </td>
-			    </tr>
-			</c:forEach>
-		</table>
-
-		<div class="summary">
-			<div class="price-row" style="display: flex; justify-content: space-between; align-items: center;">
-		        <span style="color: #a87954; font-size: 13px; background-color: #fff0e0; padding: 4px 10px; border-radius: 5px;">
-		            5만원 이상 구매 시 <strong>배송비 무료</strong>
-		        </span>
-		        <p style="margin: 0;">상품가격: <span id="product-price"></span></p>
-		    </div>
-			<p>
-				배송비: <span id="delivery-price"></span>
-			</p>
-			<p>
-				<strong>결제금액: <span id="total-price"></span></strong>
-			</p>
-		</div>
-
-		<div class="order-button">
-			<button type="button">주문하기</button>
-		</div>
+	<form id="orderForm" class="cart-container" method="post" action="${pageContext.request.contextPath}/orderBooks">
+	    <h2>장바구니</h2>
+	    <div style="text-align: right; margin-bottom: 10px;">
+	        <button type="button" onclick="deleteSelectedItems()"
+	            style="background-color: #b94e4e; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+	            선택 삭제
+	        </button>
+	    </div>
+	    <table>
+	        <tr>
+	            <th>
+	                <input type="checkbox"
+	                    onclick="document.querySelectorAll('.select-item').forEach(cb => cb.checked = this.checked); updateSummary();">
+	            </th>
+	            <th>상품정보</th>
+	            <th>수량</th>
+	            <th>가격</th>
+	        </tr>
+	
+	        <c:forEach var="item" items="${cartList}">
+	            <tr class="cart-row">
+	                <td><input type="checkbox" class="select-item" name="bookIds" value="${item.book.book_id}" checked onchange="updateSummary()"></td>
+	                <td class="product-info">
+	                    <img src="${item.book.book_image_path != null ? item.book.book_image_path : '/resources/images/default-book.png'}" alt="${item.book.book_title}">
+	                    <span>${item.book.book_title}</span>
+	                </td>
+	                <td>
+	                    <input type="number" class="quantity" name="quantities" value="${item.quantity}" min="1" onchange="updatePrice(this.closest('tr'))">
+	                </td>
+	                <td class="unit-price" data-price="${item.book.book_price}">
+	                    <span class="total-price">${item.book.book_price * item.quantity}원</span>
+	                </td>
+	            </tr>
+	        </c:forEach>
+	    </table>
+	
+	    <div class="summary">
+	        <div class="price-row" style="display: flex; justify-content: space-between; align-items: center;">
+	            <span style="color: #a87954; font-size: 13px; background-color: #fff0e0; padding: 4px 10px; border-radius: 5px;">
+	                5만원 이상 구매 시 <strong>배송비 무료</strong>
+	            </span>
+	            <p style="margin: 0;">상품가격: <span id="product-price"></span></p>
+	        </div>
+	        <p>
+	            배송비: <span id="delivery-price"></span>
+	        </p>
+	        <p>
+	            <strong>결제금액: <span id="total-price"></span></strong>
+	        </p>
+	    </div>
+	
+	    <div class="order-button">
+	        <button type="submit" onclick="return prepareOrder()">주문하기</button>
+	    </div>
 	</form>
-
 </body>
 </html>
