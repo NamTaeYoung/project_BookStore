@@ -40,5 +40,8 @@
 	<beans:bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
 		<beans:constructor-arg index="0" ref="sqlSessionFactory"></beans:constructor-arg>
 	</beans:bean>
-	
+
+	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	    <beans:property name="basePackage" value="com.lgy.project_book_store.dao" />
+	</beans:bean>
 </beans:beans>
