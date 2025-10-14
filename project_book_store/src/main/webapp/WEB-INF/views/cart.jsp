@@ -199,9 +199,12 @@
 		</table>
 
 		<div class="summary">
-			<p>
-				상품가격: <span id="product-price"></span>
-			</p>
+			<div class="price-row" style="display: flex; justify-content: space-between; align-items: center;">
+		        <span style="color: #a87954; font-size: 13px; background-color: #fff0e0; padding: 4px 10px; border-radius: 5px;">
+		            5만원 이상 구매 시 <strong>배송비 무료</strong>
+		        </span>
+		        <p style="margin: 0;">상품가격: <span id="product-price"></span></p>
+		    </div>
 			<p>
 				배송비: <span id="delivery-price"></span>
 			</p>
@@ -217,3 +220,4 @@
 
 </body>
 </html>
+
