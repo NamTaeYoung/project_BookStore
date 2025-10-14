@@ -1,6 +1,10 @@
 function check_ok(){
-
+	
+	//비밀번호 정규식
 	var passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,16}$/;
+	//전화번호 정규식
+	var phonRegex = /^0\d{1,2}-\d{3,4}-\d{4}$/;
+	
 	
 	// 폼 이름에 name 값으로 찾아감
 	if(reg_frm.user_id.value==""){
@@ -46,6 +50,19 @@ function check_ok(){
 			reg_frm.user_email.focus();
 			return;
 		}
+	
+	if(reg_frm.user_phone_num.value.length==0){
+			alert("전화번호를 써주세요.");
+			reg_frm.user_phone_num.focus();
+			return;
+		}
+ 	//전화번호가 000-0000-0000형식인지 확인
+	if (!phonRegex.test(reg_frm.user_phone_num.value)) {
+        alert("000-0000-0000형식으로 입력해주세요.");
+        reg_frm.user_pw.focus();
+        return;
+    }
+	
 	// 폼이 reg_frm에서 action 속성의 파일을 호출
 	document.reg_frm.submit();
 }
@@ -93,4 +110,58 @@ function chk_post(){
 	        }
 	    }).open();
 	}
+function sendAuthCode() {
+	var emailRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
+    const email = document.getElementById("user_email").value;
+
+    if(reg_frm.user_email.value.length==0){
+			alert("Email을 써주세요.");
+			reg_frm.user_email.focus();
+			return;
+		}
+	if (!emailRegex.test(reg_frm.user_email.value)) {
+        alert("메일형식으로 입력해주세요.");
+        reg_frm.user_email.focus();
+        return;
+    }
+    
+    fetch("mail/send?email=" + email, { method: "POST" })
+        .then(response => response.text())
+        .then(code => {
+            alert("인증번호가 전송되었습니다. (테스트용: " + code + ")");
+            document.getElementById("user_email_chk").disabled = false; 
+            document.querySelector('[onclick="verifyAuthCode()"]').disabled = false;
+        })
+        .catch(error => {
+            console.error("에러:", error);
+            alert("메일 전송 중 오류가 발생했습니다.");
+        });
+}
+
+function verifyAuthCode(){
+	const authCode = document.getElementById("user_email_chk").value;
 	
+    if (reg_frm.user_email_chk.value.length == 0) {
+        alert("인증번호를 써주세요.");
+        reg_frm.user_email_chk.focus();
+        return;
+    }
+
+    fetch("mail/verify?code=" + authCode, { method: "POST" })
+        .then(response => response.text())
+        .then(result => {
+            if (result.trim() === "success") {
+                alert("이메일 인증에 성공했습니다!");
+                document.getElementById("user_email_chk").disabled = true;
+                document.querySelector('[onclick="sendAuthCode()"]').disabled = true;
+                document.querySelector('[onclick="verifyAuthCode()"]').disabled = true;
+                document.getElementById("register_btn").disabled = false;
+            } else {
+                alert("인증번호가 올바르지 않습니다.");
+            }
+        })
+        .catch(error => {
+            console.error("에러:", error);
+            alert("서버 오류로 인증에 실패했습니다.");
+        });
+}
