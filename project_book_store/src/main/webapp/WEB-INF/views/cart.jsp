@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -98,47 +99,48 @@
 </style>
 
 <script>
-    function updatePrice(row) {
-        const quantity = row.querySelector(".quantity").value;
-        const unitPrice = parseInt(row.querySelector(".unit-price").dataset.price);
-        const totalPriceEl = row.querySelector(".total-price");
-        totalPriceEl.innerText = (quantity * unitPrice).toLocaleString() + "원";
-
-        updateSummary();
-    }
-
-    function updateSummary() {
-        const rows = document.querySelectorAll(".cart-row");
-        let total = 0;
-
-        rows.forEach(row => {
-            if (row.querySelector(".select-item").checked) {
-                const quantity = parseInt(row.querySelector(".quantity").value);
-                const price = parseInt(row.querySelector(".unit-price").dataset.price);
-                total += quantity * price;
-            }
-        });
-
-        const delivery = total >= 50000 ? 0 : 2500;
-        document.getElementById("product-price").innerText = total.toLocaleString() + "원";
-        document.getElementById("delivery-price").innerText = delivery === 0 ? "무료" : delivery.toLocaleString() + "원";
-        document.getElementById("total-price").innerText = (total + delivery).toLocaleString() + "원";
-    }
-
-    function deleteSelectedItems() {
-        const rows = document.querySelectorAll(".cart-row");
-        rows.forEach(row => {
-            const checkbox = row.querySelector(".select-item");
-            if (checkbox.checked) {
-                row.remove();
-            }
-        });
-        updateSummary();
-    }
-
-    window.onload = () => {
-        updateSummary();
-    }
+	function updatePrice(row) {
+	    const quantity = row.querySelector(".quantity").value;
+	    const unitPrice = parseInt(row.querySelector(".unit-price").dataset.price);
+	    const totalPriceEl = row.querySelector(".total-price");
+	    totalPriceEl.innerText = (quantity * unitPrice).toLocaleString() + "원";
+	
+	    updateSummary();
+	}
+	
+	function updateSummary() {
+	    const rows = document.querySelectorAll(".cart-row");
+	    let total = 0;
+	
+	    rows.forEach(row => {
+	        if (row.querySelector(".select-item").checked) {
+	            const quantity = parseInt(row.querySelector(".quantity").value);
+	            const price = parseInt(row.querySelector(".unit-price").dataset.price);
+	            total += quantity * price;
+	        }
+	    });
+	
+	    const delivery = total >= 50000 ? 0 : 3000;
+	
+	    document.getElementById("product-price").innerText = total.toLocaleString() + "원";
+	    document.getElementById("delivery-price").innerText = delivery === 0 ? "무료" : delivery.toLocaleString() + "원";
+	    document.getElementById("total-price").innerText = (total + delivery).toLocaleString() + "원";
+	}
+	
+	function deleteSelectedItems() {
+	    const rows = document.querySelectorAll(".cart-row");
+	    rows.forEach(row => {
+	        const checkbox = row.querySelector(".select-item");
+	        if (checkbox.checked) {
+	            row.remove();
+	        }
+	    });
+	    updateSummary();
+	}
+	
+	window.onload = () => {
+	    updateSummary();
+	}
 </script>
 </head>
 <body>
@@ -152,50 +154,29 @@
 			</button>
 		</div>
 		<table>
-			<tr>
-				<th><input type="checkbox"
-					onclick="document.querySelectorAll('.select-item').forEach(cb => cb.checked = this.checked); updateSummary();"></th>
-				<th>상품정보</th>
-				<th>수량</th>
-				<th>배송비</th>
-				<th>가격</th>
-			</tr>
-
-			<tr class="cart-row">
-				<td><input type="checkbox" class="select-item" checked
-					onchange="updateSummary()"></td>
-				<td class="product-info"><img src="#" alt="상품1"> <span>반팔
-						티셔츠</span></td>
-				<td><input type="number" class="quantity" value="1" min="1"
-					onchange="updatePrice(this.closest('tr'))"></td>
-				<td>2,500원</td>
-				<td class="unit-price" data-price="14500"><span
-					class="total-price">14,500원</span></td>
-			</tr>
-
-			<tr class="cart-row">
-				<td><input type="checkbox" class="select-item" checked
-					onchange="updateSummary()"></td>
-				<td class="product-info"><img src="#" alt="상품2"> <span>바지</span>
-				</td>
-				<td><input type="number" class="quantity" value="1" min="1"
-					onchange="updatePrice(this.closest('tr'))"></td>
-				<td>무료</td>
-				<td class="unit-price" data-price="55000"><span
-					class="total-price">55,000원</span></td>
-			</tr>
-
-			<tr class="cart-row">
-				<td><input type="checkbox" class="select-item" checked
-					onchange="updateSummary()"></td>
-				<td class="product-info"><img src="#" alt="상품3"> <span>나시</span>
-				</td>
-				<td><input type="number" class="quantity" value="1" min="1"
-					onchange="updatePrice(this.closest('tr'))"></td>
-				<td>무료</td>
-				<td class="unit-price" data-price="19500"><span
-					class="total-price">19,500원</span></td>
-			</tr>
+		    <tr>
+		        <th><input type="checkbox"
+		            onclick="document.querySelectorAll('.select-item').forEach(cb => cb.checked = this.checked); updateSummary();"></th>
+		        <th>상품정보</th>
+		        <th>수량</th>
+		        <th>가격</th>
+		    </tr>
+		
+		    <c:forEach var="item" items="${cartList}">
+			    <tr class="cart-row">
+			        <td><input type="checkbox" class="select-item" checked onchange="updateSummary()"></td>
+			        <td class="product-info">
+			            <img src="${item.book.book_image_path != null ? item.book.book_image_path : '/resources/images/default-book.png'}" alt="${item.book.book_title}">
+			            <span>${item.book.book_title}</span>
+			        </td>
+			        <td>
+			            <input type="number" class="quantity" value="${item.quantity}" min="1" onchange="updatePrice(this.closest('tr'))">
+			        </td>
+			        <td class="unit-price" data-price="${item.book.book_price}">
+			            <span class="total-price">${item.book.book_price * item.quantity}원</span>
+			        </td>
+			    </tr>
+			</c:forEach>
 		</table>
 
 		<div class="summary">
@@ -220,4 +201,3 @@
 
 </body>
 </html>
-
