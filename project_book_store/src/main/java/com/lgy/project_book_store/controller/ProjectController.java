@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lgy.project_book_store.dao.BookBuyDAO;
@@ -29,73 +31,130 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProjectController {
 	@Autowired
-	private UserServicelmpl service;
+	private UserServicelmpl userService;
     
     @Autowired
     private SqlSession sqlSession;
 	
-	@RequestMapping("/login")
-	public String login() {
-		log.info("@# login()");
-		
-		return "login";
-	}
-	
-//	로그인화면->로그인 여부 판단
-	@RequestMapping("/login_yn")
-	public String login_yn(@RequestParam HashMap<String, String> param, HttpSession session) {
-		log.info("@# login_yn()");
-		ArrayList<UserDTO> dtos = service.loginYn(param);
-//		아이디와 비밀번호가 일치
-		if (dtos.isEmpty()) {
-			return "login";
-		}else {
-			if (param.get("user_pw").equals(dtos.get(0).getUser_pw())) {
-				session.setAttribute("user", dtos.get(0));
-				return "login_ok";
-			} else {
-				return "login";
-			}
-		}
-	}
-	
-//	등록 화면 이동
-	@RequestMapping("/register")
-	public String register() {
-		log.info("@# register()");
-		
-		return "register";
-	}
+ // ------------------ 기존 회원가입 ------------------
+    @RequestMapping(value="/register", method=RequestMethod.GET)
+    public String register() {
+        return "register";
+    }
 
-	@RequestMapping("/register_ok")
-	public String registerOk(@RequestParam HashMap<String, String> param) {
-		log.info("@# register_ok()");
-		service.register(param);
-		return "login";
-	}
+    @RequestMapping(value="/register_ok", method=RequestMethod.POST)
+    public String registerOk(@RequestParam Map<String, String> param, Model model) {
+        if (param.get("user_email_chk") == null || param.get("user_email_chk").equals("")) {
+            param.put("user_email_chk", "N");
+        }
+
+        int result = userService.register(param);
+        if (result == 1) {
+            return "redirect:/login";
+        } else {
+            model.addAttribute("msg", "회원가입 실패. 다시 시도하세요.");
+            return "register";
+        }
+    }
+
+    // ------------------ 로그인 ------------------
+    @RequestMapping(value="/login", method=RequestMethod.GET)
+    public String login() {
+        return "login"; // /WEB-INF/views/login.jsp
+    }
+
+    @RequestMapping(value="/login_yn", method=RequestMethod.POST)
+    public String loginYn(@RequestParam Map<String, String> param, HttpSession session, Model model) {
+        String userId = param.get("user_id");
+        boolean ok = userService.loginYn(param);
+
+        if (ok) {
+            // 로그인 성공 → 세션에 아이디 저장
+            session.setAttribute("loginId", userId);
+            return "login_ok"; // 로그인 성공 후 마이페이지 버튼이 있는 화면
+        } else {
+            model.addAttribute("login_err", "아이디 또는 비밀번호가 잘못되었습니다.");
+            return "login";
+        }
+    }
+
+    @RequestMapping(value="/logout", method=RequestMethod.GET)
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+    
+ // ------------------ 마이페이지 ------------------
+    @RequestMapping(value="/mypage", method=RequestMethod.GET)
+    public String mypage(Model model, HttpSession session) {
+        String loginId = (String) session.getAttribute("loginId");
+        if (loginId == null) return "redirect:/login";
+
+        Map<String, Object> user = userService.getUser(loginId);
+        model.addAttribute("user", user);
+        return "myinfo"; // /WEB-INF/views/myinfo.jsp
+    }
+
+    @RequestMapping(value="/mypage/edit", method=RequestMethod.GET)
+    public String mypageEdit(Model model, HttpSession session) {
+        String loginId = (String) session.getAttribute("loginId");
+        if (loginId == null) return "redirect:/login";
+
+        Map<String, Object> user = userService.getUser(loginId);
+        model.addAttribute("user", user);
+        return "myinfo_edit";
+    }
+
+    @RequestMapping(value="/mypage/update", method=RequestMethod.POST)
+    public String mypageUpdate(@RequestParam Map<String, String> param, HttpSession session) {
+        String loginId = (String) session.getAttribute("loginId");
+        if (loginId == null) return "redirect:/login";
+
+        param.put("user_id", loginId);
+        userService.updateUser(param);
+        return "redirect:/mypage";
+    }
+    
+ // 탈퇴 화면
+    @RequestMapping(value="/withdraw", method=RequestMethod.GET)
+    public String withdraw(HttpSession session) {
+        String loginId = (String) session.getAttribute("loginId");
+        if (loginId == null) return "redirect:/login";
+        return "withdraw"; // /WEB-INF/views/withdraw.jsp
+    }
+
+    // 탈퇴 처리
+    @RequestMapping(value="/withdraw_ok", method=RequestMethod.POST)
+    public String withdrawOk(@RequestParam Map<String,String> param,
+                             HttpSession session, Model model) {
+        String loginId = (String) session.getAttribute("loginId");
+        if (loginId == null) return "redirect:/login";
+
+        // 세션 아이디 강제 주입 (폼 조작 방지)
+        param.put("user_id", loginId);
+
+        int res = userService.withdraw(param); // 비번 일치 시 삭제(1), 불일치 0
+        if (res == 1) {
+            session.invalidate(); // 세션 종료
+        }
+        model.addAttribute("result", res); // JSP에서 alert 처리
+        return "withdraw";
+    }
+    
+ // 컨트롤러 내부에 추가 (예: 클래스 맨 아래)
+    private String getLoginId(HttpSession session) {
+        return (String) session.getAttribute("loginId");
+    }
     
 //	장바구니 화면 이동
     @RequestMapping("/cart")
     public String cart(Model model, HttpSession session) {
         log.info("@# cart()");
-        
-//        UserDTO user = (UserDTO) session.getAttribute("user");
-//
-//        if (user == null) {
-//            // 로그인 안 되어있으면 로그인 페이지로 리다이렉트
-//            return "redirect:/login";
-//        }
-//
-//        String userId = user.getUser_id();
 
-        // 로그인 여부 상관없이 하드코딩된 userId 사용
-        String userId = "user01";
+        String userId = getLoginId(session);
+        if (userId == null) return "redirect:/login";
 
-        CartDAO cartDAO = sqlSession.getMapper(CartDAO.class);
         List<CartDTO> cartList = cartDAO.selectCartWithBookByUserId(userId);
-
-        log.info("장바구니 항목 수: {}", cartList.size());
-        
         model.addAttribute("cartList", cartList);
         return "cart";
     }
@@ -104,98 +163,44 @@ public class ProjectController {
     private BookBuyDAO bookBuyDAO;
     @Autowired
     private CartDAO cartDAO;
+    
  // 주문 처리 메서드
     @PostMapping("/orderBooks")
-    public String orderBooks( @RequestParam("book_id") List<Integer> bookIds,
-    	    				@RequestParam("quantity") List<Integer> quantities, 
-    	    				 HttpSession session) {
-        log.info("@# orderBooks() - bookIds: {}", bookIds);
-        log.info("Received quantities: {}", quantities);
+    public String orderBooks(@RequestParam("book_id") List<Integer> bookIds,
+                             @RequestParam("quantity") List<Integer> quantities, 
+                             HttpSession session) {
 
-        if(bookIds.contains(0)) {
-            log.error("Invalid book_id detected: 0");
-            // 예외 던지거나 에러 페이지 리턴
-        }
-        
-        if (bookIds == null || bookIds.isEmpty()) {
-            // 선택한 상품 없으면 장바구니로 다시 이동
-            return "redirect:/cart";
-        }
+        String userId = getLoginId(session);
+        if (userId == null) return "redirect:/login";
 
-        // 세션에서 로그인된 사용자 가져오기 (필요 시 주석 해제)
-        // UserDTO user = (UserDTO) session.getAttribute("user");
-        // if(user == null) {
-        //     return "redirect:/login";
-        // }
-        // String userId = user.getUser_id();
+        if (bookIds == null || bookIds.isEmpty()) return "redirect:/cart";
 
-        // 하드코딩 userId (테스트용)
-        String userId = "user01";
-        
-        // 주문내역 insert
         for (int i = 0; i < bookIds.size(); i++) {
             int bookId = bookIds.get(i);
             int qty = quantities.get(i);
-            log.info("Processing order item - bookId: {}, quantity: {}", bookId, qty);
 
-            if(bookId == 0) {
-                log.error("Invalid bookId detected during processing: 0");
-                // 필요 시 예외 던지거나 건너뛰기
-                continue; // 또는 break;
-            }
-            
             BookBuyDTO buyDTO = new BookBuyDTO();
             buyDTO.setBook_id(bookId);
             buyDTO.setUser_id(userId);
-            buyDTO.setQuantity(qty); // 만약 quantity 필드가 있다면
+            buyDTO.setQuantity(qty);
             buyDTO.setPurchase_date(new Date());
 
             bookBuyDAO.insertBookBuy(buyDTO);
-            
-         // 장바구니에서 구매된 아이템 삭제
             cartDAO.deleteCartItemByUserIdAndBookId(userId, bookId);
         }
 
-        // 주문 완료 후 주문내역 페이지 또는 메인으로 이동
-        return "redirect:/MyPage/purchaseList"; 
-    }
-    
-//  마이페이지/내 정보 화면 이동
-    @RequestMapping("/MyPage/myinfo")
-    public String mypage() {
-        log.info("@# myinfo()");
-        
-        return "MyPage/myinfo";
-    }
-    
-//	마이페이지/회원 탈퇴 화면 이동
-    @RequestMapping("/MyPage/withdraw")
-    public String withdraw() {
-        log.info("@# withdraw()");
-        
-        return "MyPage/withdraw";
+        return "redirect:/MyPage/purchaseList";
     }
     
 //	마이페이지/구매 기록 화면 이동
     @RequestMapping("/MyPage/purchaseList")
     public String purchaseList(Model model, HttpSession session) {
         log.info("@# purchaseList()");
-        
-        // 세션에서 로그인 사용자 정보 가져오기 (필요하면)
-        // UserDTO user = (UserDTO) session.getAttribute("user");
-        // if (user == null) {
-        //     return "redirect:/login";
-        // }
-        // String userId = user.getUser_id();
 
-        // 하드코딩 userId (테스트용)
-        String userId = "user01";
+        String userId = getLoginId(session);
+        if (userId == null) return "redirect:/login";
 
-        // bookBuyDAO에 구매내역 가져오는 메서드 필요
         List<BookBuyDTO> purchaseList = bookBuyDAO.selectPurchaseListByUserId(userId);
-        
-        log.info("구매내역 수: {}", purchaseList.size());
-
         model.addAttribute("purchaseList", purchaseList);
 
         return "MyPage/purchaseList";
