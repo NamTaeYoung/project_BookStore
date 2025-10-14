@@ -1,0 +1,65 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lgy.project_book_store.dao.SearchDAO">
+	<select id="searchBooks" parameterType="string" resultType="com.lgy.project_book_store.dto.SearchDTO">
+	    SELECT 
+	       b.book_id     AS bookId,
+	       b.book_title  AS bookTitle,
+	       b.book_writer AS bookWriter,
+	       b.book_pub    AS bookPub,
+	       b.book_date   AS bookDate,
+	       b.genre_id    AS genreId,
+	       g.genre_name  AS genreName,
+	       b.book_price  AS bookPrice,
+	       b.book_count  AS bookCount,
+	       b.book_comm   AS bookComm,
+	       b.book_isbn   AS bookIsbn,
+	       b.book_image_path AS bookImagePath
+	    FROM Book b
+	    LEFT JOIN Genre g ON b.genre_id = g.genre_id
+	    WHERE LOWER(b.book_title) LIKE '%' || LOWER(#{keyword}) || '%'
+	       OR LOWER(b.book_writer) LIKE '%' || LOWER(#{keyword}) || '%'
+	    ORDER BY b.book_id ASC
+	</select>
+
+		
+	<select id="getBookList" resultType="com.lgy.project_book_store.dto.SearchDTO">
+	    SELECT 
+	    	book_id     AS bookId,
+	        book_title  AS bookTitle,
+	        book_writer AS bookWriter,
+	        book_pub    AS bookPub,
+	        book_date   AS bookDate,
+	        b.genre_id  AS genreId,
+	        g.genre_name  AS genreName,  <!-- join해서 genre_name 가져오기 -->
+	        book_price  AS bookPrice,
+	       	book_count  AS bookCount,
+	       	book_comm   AS bookComm,
+	       	book_isbn   AS bookIsbn,
+	        b.book_image_path AS bookImagePath
+	    FROM Book b
+	    LEFT JOIN Genre g ON b.genre_id = g.genre_id
+	    ORDER BY b.book_id ASC
+	</select>
+		
+	<select id="getBookById" parameterType="int" resultType="com.lgy.project_book_store.dto.SearchDTO">
+	    SELECT 
+	        b.book_id AS bookId,
+	        b.book_title AS bookTitle,
+	        b.book_writer AS bookWriter,
+	        b.book_pub AS bookPub,
+	        b.book_date AS bookDate,
+	        b.genre_id AS genreId,
+	        g.genre_name AS genreName,
+	        b.book_price AS bookPrice,
+	        b.book_count AS bookCount,
+	        b.book_comm AS bookComm,
+	        b.book_isbn AS bookIsbn,
+	        b.book_image_path AS bookImagePath
+	    FROM Book b
+	    LEFT JOIN Genre g ON b.genre_id = g.genre_id
+	    WHERE b.book_id = #{bookId}
+	</select>
+</mapper>
