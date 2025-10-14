@@ -46,11 +46,12 @@
 	    <result property="quantity" column="quantity"/>
 	    <result property="cart_date" column="cart_date"/>
 	    <association property="book" javaType="com.lgy.project_book_store.dto.BookDTO">
+	         <id property="book_id" column="book_id"/>
 	        <result property="book_title" column="book_title"/>
 	        <result property="book_writer" column="book_writer"/>
 	        <result property="book_price" column="book_price"/>
 	        <result property="book_isbn" column="book_isbn"/>
 	    </association>
 	</resultMap>
-	
+
 </mapper>
