@@ -1,85 +1,219 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>장바구니</title>
-  <style>
-    body { font-family: 'Noto Sans KR', sans-serif; background-color: #f5f6fa; margin: 0; display: flex; height: 100vh; }
-    .sidebar { width: 250px; background-color: #ffffff; border-right: 1px solid #ddd; padding-top: 30px; display: flex; flex-direction: column; align-items: center; }
-    .profile { background-color: #2d6cdf; color: white; font-size: 30px; font-weight: bold; width: 100px; height: 100px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 10px; }
-    .sidebar h2 { margin-bottom: 40px; font-size: 18px; }
-    .menu-link { width: 80%; text-decoration: none; color: black; padding: 12px; margin: 8px 0; font-size: 16px; text-align: left; border-radius: 8px; display: block; }
-    .menu-link:hover, .menu-link.active { background-color: #e6f0ff; color: #2d6cdf; font-weight: bold; }
-    .content { flex-grow: 1; padding: 40px; overflow-y: auto; }
-    .cart-box { background-color: white; border-radius: 10px; padding: 40px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
-    h2 { margin-bottom: 30px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-    th, td { border-bottom: 1px solid #ddd; padding: 12px; text-align: center; }
-    th { background-color: #f1f3f5; font-weight: bold; }
-    td img { width: 60px; height: 80px; object-fit: cover; }
-    .total-box { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-top: 1px solid #ddd; font-size: 18px; }
-    .total-box strong { font-size: 20px; color: #2d6cdf; }
-    .order-btn { background-color: #2d6cdf; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; cursor: pointer; }
-    .order-btn:hover { background-color: #1d4fc2; }
-    .empty { text-align: center; color: #555; padding: 100px 0; font-size: 18px; }
-  </style>
+<meta charset="UTF-8">
+<title>장바구니</title>
+<style>
+	body {
+		font-family: 'Noto Sans KR', sans-serif;
+		background-color: #f4f1ed;
+		margin: 0;
+		padding: 0;
+	}
+	
+	.cart-container {
+		width: 800px;
+		margin: 50px auto;
+		background-color: #fff8f0;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		padding: 30px;
+	}
+	
+	h2 {
+		margin-bottom: 20px;
+		color: #5c3a21;
+	}
+	
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	
+	th, td {
+		text-align: center;
+		padding: 12px;
+		border-bottom: 1px solid #e0d4c1;
+	}
+	
+	th {
+		background-color: #d7b899;
+		color: #fff;
+	}
+	
+	.product-info {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		justify-content: flex-start;
+	}
+	
+	.product-info img {
+		width: 50px;
+		height: 50px;
+		border-radius: 4px;
+		background-color: #ccc;
+	}
+	
+	input[type=number] {
+		width: 50px;
+		padding: 5px;
+		text-align: center;
+	}
+	
+	.summary {
+		text-align: right;
+		margin-top: 20px;
+		color: #5c3a21;
+	}
+	
+	.summary p {
+		margin: 5px 0;
+	}
+	
+	.summary strong {
+		font-size: 18px;
+	}
+	
+	.order-button {
+		margin-top: 30px;
+		text-align: center;
+	}
+	
+	.order-button button {
+		background-color: #1e80ff;
+		color: white;
+		border: none;
+		padding: 15px 40px;
+		border-radius: 5px;
+		font-size: 16px;
+		cursor: pointer;
+	}
+	
+	.order-button button:hover {
+		background-color: #1669d4;
+	}
+</style>
+
+<script>
+    function updatePrice(row) {
+        const quantity = row.querySelector(".quantity").value;
+        const unitPrice = parseInt(row.querySelector(".unit-price").dataset.price);
+        const totalPriceEl = row.querySelector(".total-price");
+        totalPriceEl.innerText = (quantity * unitPrice).toLocaleString() + "원";
+
+        updateSummary();
+    }
+
+    function updateSummary() {
+        const rows = document.querySelectorAll(".cart-row");
+        let total = 0;
+
+        rows.forEach(row => {
+            if (row.querySelector(".select-item").checked) {
+                const quantity = parseInt(row.querySelector(".quantity").value);
+                const price = parseInt(row.querySelector(".unit-price").dataset.price);
+                total += quantity * price;
+            }
+        });
+
+        const delivery = total >= 50000 ? 0 : 2500;
+        document.getElementById("product-price").innerText = total.toLocaleString() + "원";
+        document.getElementById("delivery-price").innerText = delivery === 0 ? "무료" : delivery.toLocaleString() + "원";
+        document.getElementById("total-price").innerText = (total + delivery).toLocaleString() + "원";
+    }
+
+    function deleteSelectedItems() {
+        const rows = document.querySelectorAll(".cart-row");
+        rows.forEach(row => {
+            const checkbox = row.querySelector(".select-item");
+            if (checkbox.checked) {
+                row.remove();
+            }
+        });
+        updateSummary();
+    }
+
+    window.onload = () => {
+        updateSummary();
+    }
+</script>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="profile">OOO</div>
-    <h2>OOO 님</h2>
 
-    <a href="mypage.jsp" class="menu-link">내 정보</a>
-    <a href="purchase.jsp" class="menu-link">구매기록</a>
-    <a href="edit.jsp" class="menu-link">정보 수정</a>
-    <a href="password.jsp" class="menu-link">비밀번호 변경</a>
-    <a href="cart.jsp" class="menu-link active">장바구니</a>
-    <a href="withdraw.jsp" class="menu-link">회원탈퇴</a>
-  </div>
+	<form class="cart-container" method="post" action="/cart">
+		<h2>장바구니</h2>
+		<div style="text-align: right; margin-bottom: 10px;">
+			<button type="button" onclick="deleteSelectedItems()"
+				style="background-color: #b94e4e; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+				선택 삭제
+			</button>
+		</div>
+		<table>
+			<tr>
+				<th><input type="checkbox"
+					onclick="document.querySelectorAll('.select-item').forEach(cb => cb.checked = this.checked); updateSummary();"></th>
+				<th>상품정보</th>
+				<th>수량</th>
+				<th>배송비</th>
+				<th>가격</th>
+			</tr>
 
-  <div class="content">
-    <div class="cart-box">
-      <h2>장바구니</h2>
+			<tr class="cart-row">
+				<td><input type="checkbox" class="select-item" checked
+					onchange="updateSummary()"></td>
+				<td class="product-info"><img src="#" alt="상품1"> <span>반팔
+						티셔츠</span></td>
+				<td><input type="number" class="quantity" value="1" min="1"
+					onchange="updatePrice(this.closest('tr'))"></td>
+				<td>2,500원</td>
+				<td class="unit-price" data-price="14500"><span
+					class="total-price">14,500원</span></td>
+			</tr>
 
-      <table>
-        <thead>
-          <tr>
-            <th>상품</th>
-            <th>상품명</th>
-            <th>수량</th>
-            <th>가격</th>
-            <th>합계</th>
-            <th>삭제</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><img src="images/book1.jpg" alt="상품 이미지"></td>
-            <td>모던 자바 인 액션</td>
-            <td>1</td>
-            <td>25,000원</td>
-            <td>25,000원</td>
-            <td><button style="background:none;border:none;color:red;cursor:pointer;">삭제</button></td>
-          </tr>
-          <tr>
-            <td><img src="images/book2.jpg" alt="상품 이미지"></td>
-            <td>Clean Code</td>
-            <td>2</td>
-            <td>30,000원</td>
-            <td>60,000원</td>
-            <td><button style="background:none;border:none;color:red;cursor:pointer;">삭제</button></td>
-          </tr>
-        </tbody>
-      </table>
+			<tr class="cart-row">
+				<td><input type="checkbox" class="select-item" checked
+					onchange="updateSummary()"></td>
+				<td class="product-info"><img src="#" alt="상품2"> <span>바지</span>
+				</td>
+				<td><input type="number" class="quantity" value="1" min="1"
+					onchange="updatePrice(this.closest('tr'))"></td>
+				<td>무료</td>
+				<td class="unit-price" data-price="55000"><span
+					class="total-price">55,000원</span></td>
+			</tr>
 
-      <div class="total-box">
-        <div>총 2개 상품</div>
-        <div><strong>총 합계: 85,000원</strong></div>
-        <button class="order-btn">주문하기</button>
-      </div>
-    </div>
-  </div>
+			<tr class="cart-row">
+				<td><input type="checkbox" class="select-item" checked
+					onchange="updateSummary()"></td>
+				<td class="product-info"><img src="#" alt="상품3"> <span>나시</span>
+				</td>
+				<td><input type="number" class="quantity" value="1" min="1"
+					onchange="updatePrice(this.closest('tr'))"></td>
+				<td>무료</td>
+				<td class="unit-price" data-price="19500"><span
+					class="total-price">19,500원</span></td>
+			</tr>
+		</table>
+
+		<div class="summary">
+			<p>
+				상품가격: <span id="product-price"></span>
+			</p>
+			<p>
+				배송비: <span id="delivery-price"></span>
+			</p>
+			<p>
+				<strong>결제금액: <span id="total-price"></span></strong>
+			</p>
+		</div>
+
+		<div class="order-button">
+			<button type="button">주문하기</button>
+		</div>
+	</form>
+
 </body>
 </html>
-
