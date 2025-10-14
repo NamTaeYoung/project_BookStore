@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -125,8 +127,8 @@ td:first-child {
         <h2>${userName != null ? userName : '사용자'} 님</h2>
 
         <a href="mypage" class="menu-link active">내 정보</a> 
-        <a href="purchaseList.jsp" class="menu-link">구매 기록</a> 
-        <a href="editProfile.jsp" class="menu-link">정보 수정</a> 
+        <a href="purchaseList" class="menu-link">구매 내역</a> 
+        <a href="editProfile" class="menu-link">정보 수정</a> 
         <a href="withdraw" class="menu-link" >회원탈퇴</a>
     </div>
 
