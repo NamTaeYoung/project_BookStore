@@ -16,9 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class ProjectController {
-	
 	@Autowired
 	private ProjectServicelmpl service;
+    
+    @Autowired
+    private SqlSession sqlSession;
 	
 	@RequestMapping("/login")
 	public String login() {
@@ -58,4 +60,37 @@ public class ProjectController {
 		service.register(param);
 		return "login";
 	}
-}	
+    
+    @RequestMapping("/cart")
+    public String cart(Model model) {
+        log.info("@# cart()");
+        
+
+        // 로그인 여부 상관없이 하드코딩된 userId 사용
+        String userId = "user01";
+
+        CartDAO cartDAO = sqlSession.getMapper(CartDAO.class);
+        List<CartDTO> cartList = cartDAO.selectCartWithBookByUserId(userId);
+
+        log.info("장바구니 항목 수: {}", cartList.size());
+        
+        model.addAttribute("cartList", cartList);
+        return "cart";
+    }
+    
+    @RequestMapping("/MyPage/myinfo")
+    public String mypage() {
+        log.info("@# myinfo()");
+        
+        return "MyPage/myinfo";
+    }
+    
+    @RequestMapping("/MyPage/withdraw")
+    public String withdraw() {
+        log.info("@# withdraw()");
+        
+        return "MyPage/withdraw";
+    }
+}
+
+
