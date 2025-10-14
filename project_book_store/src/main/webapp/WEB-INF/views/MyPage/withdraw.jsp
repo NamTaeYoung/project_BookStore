@@ -165,7 +165,7 @@
 			<h3>본인확인을 위해 비밀번호를 입력해주세요.</h3>
 			<form method="post" action="withdrawConfirm.do" onsubmit="event.preventDefault(); confirmWithdraw(this);">
 				<div class="input-box">
-					<input type="text" name="userId" value="${userId}" readonly><br>
+					<input type="text" name="userId" value="${userId != null ? userId : 'ID'}" readonly><br>
 					<input type="password" name="userPw" placeholder="비밀번호" required><br>
 					<button type="submit" class="withdraw-btn">회원탈퇴</button>
 				</div>
@@ -174,3 +174,4 @@
 	</div>
 </body>
 </html>
+
