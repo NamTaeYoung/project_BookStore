@@ -22,4 +22,8 @@ public interface CartDAO {
     
     //현재 로그인한 유저의 장바구니를 조회
     List<CartDTO> selectCartWithBookByUserId(String user_id);
+
+    int deleteCartItemByUserIdAndBookId(@Param("user_id") String user_id, @Param("book_id") int book_id);
+
 }
+
