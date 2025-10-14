@@ -102,6 +102,8 @@ public class ProjectController {
     
     @Autowired
     private BookBuyDAO bookBuyDAO;
+    @Autowired
+    private CartDAO cartDAO;
  // 주문 처리 메서드
     @PostMapping("/orderBooks")
     public String orderBooks( @RequestParam("book_id") List<Integer> bookIds,
@@ -149,6 +151,9 @@ public class ProjectController {
             buyDTO.setPurchase_date(new Date());
 
             bookBuyDAO.insertBookBuy(buyDTO);
+            
+         // 장바구니에서 구매된 아이템 삭제
+            cartDAO.deleteCartItemByUserIdAndBookId(userId, bookId);
         }
 
         // 주문 완료 후 주문내역 페이지 또는 메인으로 이동
