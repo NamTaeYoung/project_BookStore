@@ -54,4 +54,9 @@
 	    </association>
 	</resultMap>
 
+	<delete id="deleteCartItemByUserIdAndBookId" parameterType="map">
+	    DELETE FROM Cart
+	    WHERE user_id = #{user_id} AND book_id = #{book_id}
+	</delete>
 </mapper>
+
