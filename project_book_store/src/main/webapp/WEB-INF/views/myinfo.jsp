@@ -19,6 +19,7 @@
   </table>
   <br>
   <a href="${pageContext.request.contextPath}/mypage/edit">회원정보 수정</a>
+  <a href="${pageContext.request.contextPath}/MyPage/purchaseList">구매 내역</a>
   <a href="${pageContext.request.contextPath}/withdraw">회원 탈퇴</a>
   <a href="${pageContext.request.contextPath}/logout">로그아웃</a>
 </body>
