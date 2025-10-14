@@ -57,7 +57,7 @@
     </table>
 </c:if>
 
-<a href="myinfo">내 정보로 돌아가기</a>
-
+<a href="${pageContext.request.contextPath}/mypage">마이페이지</a>
+  
 </body>
 </html>
