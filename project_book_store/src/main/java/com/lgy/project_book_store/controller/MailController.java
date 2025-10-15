@@ -1,5 +1,7 @@
 package com.lgy.project_book_store.controller;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +65,19 @@ public class MailController {
             return "fail";
         }
     }
+    
+//    //비밀번호 찾기
+//    @PostMapping("/find_password")
+//    @ResponseBody
+//    public String sendUserPassword(@RequestParam HashMap<String, String> param){
+//    	String userInfo = mailService.findUserPassword(null, null)
+//    	
+//    	if (userInfo != null) {
+//    		mailService.sendCustomMail(id,email, "비밀번호 찾기 안내", 
+//    				"<h3>회원님의 비밀번호는 다음과 같습니다:</h3><h2>" + userInfo + "</h2>");
+//    		return "success";
+//    	} else {
+//    		return "fail";
+//    	}
+//    }
 }
