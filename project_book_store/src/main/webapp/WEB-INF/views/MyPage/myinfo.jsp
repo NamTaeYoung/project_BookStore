@@ -64,12 +64,22 @@
                 <div><div class="avatar" aria-hidden="true"></div></div>
                 <div>
                   <div class="badge" title="등급">회원등급: <strong>일반</strong></div>
-                  <div class="kv"><strong>이름</strong><div><c:out value='${sessionScope.loginUser}' default='홍길동'/></div></div>
-                  <div class="kv"><strong>닉네임</strong><div>길동러버</div></div>
-                  <div class="kv"><strong>이메일</strong><div>gildong@example.com</div></div>
-                  <div class="kv"><strong>전화번호</strong><div>010-1234-5678</div></div>
-                  <div class="kv"><strong>주소</strong><div>(12345) 부산광역시 부산진구 범내골 123-4, 101동 1001호</div></div>
-                  <div class="kv" style="border-bottom:none"><strong>가입일</strong><div>2025-09-01</div></div>
+                  
+                  <!-- ✅ DB값 반영 -->
+                  <div class="kv"><strong>이름</strong><div><c:out value="${user.user_name}" default="이름없음"/></div></div>
+                  <div class="kv"><strong>닉네임</strong><div><c:out value="${user.user_nickname}" default="-"/></div></div>
+                  <div class="kv"><strong>이메일</strong><div><c:out value="${user.user_email}" default="-"/></div></div>
+                  <div class="kv"><strong>전화번호</strong><div><c:out value="${user.user_phone_num}" default="-"/></div></div>
+                  <div class="kv"><strong>주소</strong>
+                    <div>
+                      (<c:out value="${user.user_post_num}" default=""/>)
+                      <c:out value="${user.user_address}" default=""/>
+                      <c:out value="${user.user_detail_address}" default=""/>
+                    </div>
+                  </div>
+                  <div class="kv" style="border-bottom:none">
+                    <strong>가입일</strong><div><c:out value="${user.reg_date}" default="-"/></div>
+                  </div>
                 </div>
               </div>
             </div>
