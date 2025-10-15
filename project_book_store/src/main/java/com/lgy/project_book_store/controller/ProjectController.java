@@ -30,12 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class ProjectController {
-	@Autowired
-	private UserServicelmpl userService;
+	//@Autowired
+	//private UserServicelmpl userService;
     
     @Autowired
     private SqlSession sqlSession;
-	
+
+	/*
  // ------------------ 기존 회원가입 ------------------
     @RequestMapping(value="/register", method=RequestMethod.GET)
     public String register() {
@@ -83,6 +84,7 @@ public class ProjectController {
         session.invalidate();
         return "redirect:/login";
     }
+	*/
 	
  @Autowired
 	private UserServicelmpl service;
@@ -254,6 +256,7 @@ public class ProjectController {
         return "MyPage/purchaseList";
     }
 }
+
 
 
 
