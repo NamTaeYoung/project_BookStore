@@ -56,6 +56,7 @@ function check_ok(){
 			reg_frm.user_phone_num.focus();
 			return;
 		}
+		
  	//전화번호가 000-0000-0000형식인지 확인
 	if (!phonRegex.test(reg_frm.user_phone_num.value)) {
         alert("000-0000-0000형식으로 입력해주세요.");
@@ -63,8 +64,18 @@ function check_ok(){
         return;
     }
 	
+    if (!checkIdOk) {
+        alert("아이디 중복 검사를 먼저 해주세요!");
+        return;
+    }
+    
+    if (!emailOk) {
+        alert("이메일 인증을 완료해야 회원가입이 가능합니다!");
+        return;
+    }
 	// 폼이 reg_frm에서 action 속성의 파일을 호출
 	document.reg_frm.submit();
+	alert("회원가입이 완료되었습니다!");
 }
 
 //우편번호 검색
@@ -127,10 +138,19 @@ function sendAuthCode() {
     
     fetch("mail/send?email=" + email, { method: "POST" })
         .then(response => response.text())
-        .then(code => {
-            alert("인증번호가 전송되었습니다. (테스트용: " + code + ")");
-            document.getElementById("user_email_chk").disabled = false; 
-            document.querySelector('[onclick="verifyAuthCode()"]').disabled = false;
+        .then(result => {
+        	if (result === "duplicate") {
+                alert("이미 등록된 이메일입니다. 다른 이메일을 사용해주세요.");
+                document.getElementById("user_email").focus();
+                return;
+            } else if (!isNaN(result)) {
+            //} else if (result === "success") {
+                alert("인증번호가 전송되었습니다. (테스트용: " + result + ")");
+                document.getElementById("user_email_chk").disabled = false;
+                document.querySelector('[onclick="verifyAuthCode()"]').disabled = false;
+            } else {
+                alert("메일 전송 중 오류가 발생했습니다. (응답값: " + result + ")");
+            }
         })
         .catch(error => {
             console.error("에러:", error);
@@ -152,6 +172,7 @@ function verifyAuthCode(){
         .then(result => {
             if (result.trim() === "success") {
                 alert("이메일 인증에 성공했습니다!");
+                emailOk = true;
                 document.getElementById("user_email_chk").disabled = true;
                 document.querySelector('[onclick="sendAuthCode()"]').disabled = true;
                 document.querySelector('[onclick="verifyAuthCode()"]').disabled = true;
