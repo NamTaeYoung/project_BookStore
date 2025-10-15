@@ -1,14 +1,29 @@
 package com.lgy.project_book_store.dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.lgy.project_book_store.dto.GenreDTO;
 import com.lgy.project_book_store.dto.SearchDTO;
 
 public interface SearchDAO {
-    ArrayList<SearchDTO> getBookList();
-    ArrayList<SearchDTO> searchBooks(@Param("keyword") String keyword);
-    SearchDTO getBookById(int bookId);
+
+    // 전체 도서 목록 조회
+    List<SearchDTO> getBookList();
+
+    // 키워드로 도서 검색
+    List<SearchDTO> searchBooks(@Param("keyword") String keyword);
+
+    // 단일 도서 조회
+    SearchDTO getBookById(@Param("bookId") int bookId);
+
+    // 장르 목록 조회
+    List<GenreDTO> getGenreList();
+
+    // 검색어 + 장르로 도서 검색 (검색어 또는 장르가 null 가능)
+    List<SearchDTO> searchBooksByTitleAndGenre(
+            @Param("q") String q, 
+            @Param("genreId") Integer genreId
+    );
 }
