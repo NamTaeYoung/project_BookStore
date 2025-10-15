@@ -42,16 +42,16 @@
         <h1 class="auth-title">로그인</h1>
         <p class="auth-desc">책갈피에 오신 것을 환영합니다. 계정으로 로그인해주세요.</p>
 
-        <form id="loginForm" novalidate>
+        <form id="loginForm" novalidate method="post" action="login_yn">
           <div class="field">
-            <label class="label" for="email">로그인</label>
-            <input class="input" id="email" name="email" type="email" inputmode="email" placeholder="아이디를 입력하세요" required />
+            <label class="label" for="user_id">로그인</label>
+            <input class="input" id="user_id" name="user_id" type="email" inputmode="email" placeholder="아이디를 입력하세요" required />
           </div>
 
           <div class="field">
-            <label class="label" for="password">비밀번호</label>
+            <label class="label" for="user_pw">비밀번호</label>
             <div class="input-group">
-              <input class="input" id="password" name="password" type="password" placeholder="비밀번호를 입력하세요" required />
+              <input class="input" id="user_pw" name="user_pw" type="password" placeholder="비밀번호를 입력하세요" required />
               <button type="button" class="password-toggle" aria-label="비밀번호 보기/숨기기"></button>
             </div>
           </div>
@@ -101,8 +101,8 @@
       <!-- 아이디 찾기 -->
       <form id="idFindForm" class="modal-form" onsubmit="findId(event)" style="display: block;">
         <div class="field">
-          <label class="label" for="findName">이메일</label>
-          <input class="input" id="findName" name="email" type="email" placeholder="이메일을 입력하세요" required />
+          <label class="label" for="find_email">이메일</label>
+          <input class="input" id="find_email" name="user_email" type="email" placeholder="이메일을 입력하세요" required />
         </div>
         <div class="modal-submit">
           <button type="submit" class="btn btn-primary">확인</button>
