@@ -58,7 +58,7 @@
       <!-- Content Card -->
       <div class="content-card">
         <!-- 내정보 수정 -->
-        <form class="card" id="formEdit" method="post" action="<c:url value='/mypage/edit'/>" novalidate>
+        <form class="card" id="formEdit" method="post" action="<c:url value='/mypage/update'/>" novalidate>
           <div class="card-head">
             <h3 class="card-title">내정보 수정</h3>
             <div class="toolbar">
