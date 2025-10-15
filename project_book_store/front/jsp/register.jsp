@@ -146,4 +146,5 @@
     <!-- 외부 JS -->
   	<script src="<c:url value='/resources/js/register.js'/>"></script>
 </body>
+
 </html>
