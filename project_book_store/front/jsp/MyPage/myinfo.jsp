@@ -30,8 +30,10 @@
             <c:otherwise>마이페이지</c:otherwise>
           </c:choose>
         </span>
-        <a href="<c:url value='/logout'/>">로그아웃</a>
-        <a href="<c:url value='/cart'/>">장바구니</a>
+          <a href="<c:url value='/cart'/>">장바구니</a>
+          <a href="<c:url value='/logout'/>">로그아웃</a>
+          <span style="color:#666; font-weight:700;">
+            ${sessionScope.loginId}님
       </div>
     </nav>
   </header>
