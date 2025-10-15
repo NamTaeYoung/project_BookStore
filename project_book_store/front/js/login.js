@@ -15,14 +15,15 @@ document.querySelectorAll('.password-toggle').forEach(button => {
 // 로그인 폼 제출
 document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.getElementById('user_id').value;
+  const password = document.getElementById('user_pw').value;
 
   if (!email || !password) {
     alert('아이디와 비밀번호를 모두 입력해주세요.');
     return;
   }
-  alert('로그인 기능은 준비 중입니다. (아이디: ' + email + ')');
+  	//alert('로그인 기능은 준비 중입니다. (아이디: ' + user_id + ')');
+  	this.submit();
 });
 
 // 모달 관련 함수
@@ -57,7 +58,7 @@ window.onclick = function(event) {
 }
 function findId(event) {
   event.preventDefault();
-  const email = document.getElementById('findName').value;
+  const email = document.getElementById('find_email').value;
   if (!email) {
     alert('이메일을 입력해주세요.');
     return;
@@ -67,8 +68,19 @@ function findId(event) {
     alert('이메일 양식을 다시 확인해주세요.');
     return;
   }
-  alert('이메일로 전송되었습니다.');
-  closeModal('accountFindModal');
+  fetch("mail/find_id?email=" + email, { method: "POST" })
+        .then(response => response.text())
+        .then(result => {
+            if (result.trim() === "success") {
+                alert("입력하신 이메일로 아이디를 보냈습니다.");
+            } else {
+                alert("해당 이메일이 존재하지 않습니다.");
+            }
+        })
+        .catch(error => {
+            console.error("에러:", error);
+            alert("서버 오류로 인증에 실패했습니다.");
+        });
 }
 function findPassword(event) {
   event.preventDefault();
