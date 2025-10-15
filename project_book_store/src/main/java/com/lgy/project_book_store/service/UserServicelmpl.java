@@ -29,4 +29,9 @@ public class UserServicelmpl implements UserService{
 		dao.register(param);
 	}
 
+	@Override
+	public int checkId(String id) {
+		UserDAO dao = sqlSession.getMapper(UserDAO.class);
+        return dao.checkId(id);
+	}
 }
