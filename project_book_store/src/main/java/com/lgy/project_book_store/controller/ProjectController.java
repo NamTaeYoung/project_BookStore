@@ -84,6 +84,47 @@ public class ProjectController {
         return "redirect:/login";
     }
 	
+ @Autowired
+	private UserServicelmpl service;
+	
+	@RequestMapping("/login")
+	public String login() {
+		log.info("@# login()");
+		
+		return "login";
+	}
+	
+//	로그인화면->로그인 여부 판단
+	@RequestMapping("/login_yn")
+	public String login_yn(@RequestParam HashMap<String, String> param) {
+		log.info("@# login_yn()");
+		ArrayList<UserDTO> dtos = service.loginYn(param);
+//		아이디와 비밀번호가 일치
+		if (dtos.isEmpty()) {
+			return "login";
+		}else {
+			if (param.get("user_pw").equals(dtos.get(0).getUser_pw())) {
+				return "main";
+			} else {
+				return "login";
+			}
+		}
+	}
+	
+//	등록 화면 이동
+	@RequestMapping("/register")
+	public String register() {
+		log.info("@# register()");
+		
+		return "register";
+	}
+
+	@RequestMapping("/register_ok")
+	public String registerOk(@RequestParam HashMap<String, String> param) {
+		log.info("@# register_ok()");
+		service.register(param);
+		return "login";
+	}
  // ------------------ 아이디 중복 체크 ------------------
 	@ResponseBody
     @RequestMapping(value="/checkId", method=RequestMethod.POST)
@@ -91,22 +132,6 @@ public class ProjectController {
         int flag = service.checkId(id);
         return (flag == 1) ? "Y" : "N";
     }
-	
- // ------------------ 아이디 찾기 ------------------
-	@RequestMapping("/findId")
-	public String findId() {
-		log.info("@# findId()");
-		
-		return "login/findId";
-	}
-	
- // ------------------ 비밀번호 찾기 ------------------
-	@RequestMapping("/findPassword")
-	public String findPassword() {
-		log.info("@# findPassword()");
-		
-		return "login/findPassword";
-	}
 	
  // ------------------ 마이페이지 ------------------
     @RequestMapping(value="/mypage", method=RequestMethod.GET)
@@ -229,5 +254,6 @@ public class ProjectController {
         return "MyPage/purchaseList";
     }
 }
+
 
 
