@@ -116,7 +116,7 @@ public class ProjectController {
 
         Map<String, Object> user = userService.getUser(loginId);
         model.addAttribute("user", user);
-        return "myinfo"; // /WEB-INF/views/myinfo.jsp
+        return "/MyPage/myinfo"; // /WEB-INF/views/myinfo.jsp
     }
 
     @RequestMapping(value="/mypage/edit", method=RequestMethod.GET)
@@ -126,7 +126,7 @@ public class ProjectController {
 
         Map<String, Object> user = userService.getUser(loginId);
         model.addAttribute("user", user);
-        return "myinfo_edit";
+        return "/MyPage/myinfo_edit";
     }
 
     @RequestMapping(value="/mypage/update", method=RequestMethod.POST)
@@ -144,7 +144,7 @@ public class ProjectController {
     public String withdraw(HttpSession session) {
         String loginId = (String) session.getAttribute("loginId");
         if (loginId == null) return "redirect:/login";
-        return "withdraw"; // /WEB-INF/views/withdraw.jsp
+        return "/MyPage/withdraw"; // /WEB-INF/views/withdraw.jsp
     }
 
     // 탈퇴 처리
@@ -162,10 +162,9 @@ public class ProjectController {
             session.invalidate(); // 세션 종료
         }
         model.addAttribute("result", res); // JSP에서 alert 처리
-        return "withdraw";
+        return "/MyPage/withdraw";
     }
     
- // 컨트롤러 내부에 추가 (예: 클래스 맨 아래)
     private String getLoginId(HttpSession session) {
         return (String) session.getAttribute("loginId");
     }
@@ -230,4 +229,5 @@ public class ProjectController {
         return "MyPage/purchaseList";
     }
 }
+
 
