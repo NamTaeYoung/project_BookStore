@@ -24,6 +24,6 @@ public interface SearchDAO {
     // 검색어 + 장르로 도서 검색 (검색어 또는 장르가 null 가능)
     List<SearchDTO> searchBooksByTitleAndGenre(
             @Param("q") String q, 
-            @Param("genre_id") Integer genre_id
+            @Param("genreId") Integer genreId
     );
 }
