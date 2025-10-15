@@ -15,4 +15,11 @@ public interface UserDAO {
     // 기타 필요한 메서드 예시
     public void updateUser(UserDTO user);
     public void deleteUser(String user_id);
+	// 아이디 중복 체크
+    public int checkId(String user_id);
+    // 이메일 중복 체크
+    public int checkEmail(String user_email);
+    // 이메일로 아이디를 찾음
+    public String findIdByEmail(String user_email);
 }
+
