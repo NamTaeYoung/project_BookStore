@@ -8,26 +8,27 @@
 	<select id="searchBooks" parameterType="string"
 		resultType="com.lgy.project_book_store.dto.SearchDTO">
 		SELECT
-		b.book_id AS bookId,
-		b.book_title AS bookTitle,
-		b.book_writer AS bookWriter,
-		b.book_pub AS bookPub,
-		b.book_date AS
-		bookDate,
-		b.genre_id AS genreId,
-		g.genre_name AS genreName,
-		b.book_price
-		AS bookPrice,
-		b.book_count AS bookCount,
-		b.book_comm AS bookComm,
-		b.book_isbn AS bookIsbn,
-		b.book_image_path AS bookImagePath
+		b.book_id,
+		b.book_title,
+		b.book_writer,
+		b.book_pub,
+		b.book_date,
+		b.genre_id,
+		g.genre_name,
+		b.book_price,
+		b.book_count,
+		b.book_comm,
+		b.book_isbn,
+		b.book_image_path
 		FROM Book b
-		LEFT JOIN Genre g ON b.genre_id = g.genre_id
+		LEFT JOIN Genre g
+		ON b.genre_id = g.genre_id
 		WHERE LOWER(b.book_title)
-		LIKE CONCAT('%', LOWER(#{keyword}), '%')
+		LIKE CONCAT('%',
+		LOWER(#{keyword}), '%')
 		OR LOWER(b.book_writer) LIKE
-		CONCAT('%', LOWER(#{keyword}), '%')
+		CONCAT('%',
+		LOWER(#{keyword}), '%')
 		ORDER BY b.book_id ASC
 	</select>
 
@@ -35,22 +36,21 @@
 	<select id="getBookList"
 		resultType="com.lgy.project_book_store.dto.SearchDTO">
 		SELECT
-		b.book_id AS bookId,
-		b.book_title AS bookTitle,
-		b.book_writer AS bookWriter,
-		b.book_pub AS bookPub,
-		b.book_date AS
-		bookDate,
-		b.genre_id AS genreId,
-		g.genre_name AS genreName,
-		b.book_price
-		AS bookPrice,
-		b.book_count AS bookCount,
-		b.book_comm AS bookComm,
-		b.book_isbn AS bookIsbn,
-		b.book_image_path AS bookImagePath
+		b.book_id,
+		b.book_title,
+		b.book_writer,
+		b.book_pub,
+		b.book_date,
+		b.genre_id,
+		g.genre_name,
+		b.book_price,
+		b.book_count,
+		b.book_comm,
+		b.book_isbn,
+		b.book_image_path
 		FROM Book b
-		LEFT JOIN Genre g ON b.genre_id = g.genre_id
+		LEFT JOIN Genre g
+		ON b.genre_id = g.genre_id
 		ORDER BY b.book_id ASC
 	</select>
 
@@ -58,51 +58,52 @@
 	<select id="getBookById" parameterType="int"
 		resultType="com.lgy.project_book_store.dto.SearchDTO">
 		SELECT
-		b.book_id AS bookId,
-		b.book_title AS bookTitle,
-		b.book_writer AS bookWriter,
-		b.book_pub AS bookPub,
-		b.book_date AS
-		bookDate,
-		b.genre_id AS genreId,
-		g.genre_name AS genreName,
-		b.book_price
-		AS bookPrice,
-		b.book_count AS bookCount,
-		b.book_comm AS bookComm,
-		b.book_isbn AS bookIsbn,
-		b.book_image_path AS bookImagePath
+		b.book_id,
+		b.book_title,
+		b.book_writer,
+		b.book_pub,
+		b.book_date,
+		b.genre_id,
+		g.genre_name,
+		b.book_price,
+		b.book_count,
+		b.book_comm,
+		b.book_isbn,
+		b.book_image_path
 		FROM Book b
-		LEFT JOIN Genre g ON b.genre_id = g.genre_id
+		LEFT JOIN Genre g
+		ON b.genre_id = g.genre_id
 		WHERE b.book_id =
-		#{bookId}
+		#{book_id}
 	</select>
 
 	<!-- 검색어 + 장르 필터 -->
 	<select id="searchBooksByTitleAndGenre"
 		resultType="com.lgy.project_book_store.dto.SearchDTO">
 		SELECT
-		b.book_id AS bookId,
-		b.book_title AS bookTitle,
-		b.book_writer AS bookWriter,
-		b.book_pub AS bookPub,
-		b.book_date AS bookDate,
-		b.genre_id AS genreId,
-		g.genre_name AS genreName,
-		b.book_price AS bookPrice,
-		b.book_count AS bookCount,
-		b.book_comm AS bookComm,
-		b.book_isbn AS bookIsbn,
-		b.book_image_path AS bookImagePath
+		b.book_id,
+		b.book_title,
+		b.book_writer,
+		b.book_pub,
+		b.book_date,
+		b.genre_id,
+		g.genre_name,
+		b.book_price,
+		b.book_count,
+		b.book_comm,
+		b.book_isbn,
+		b.book_image_path
 		FROM Book b
-		LEFT JOIN Genre g ON b.genre_id = g.genre_id
+		LEFT JOIN Genre g ON
+		b.genre_id = g.genre_id
 		WHERE 1=1
 		<if test="q != null and q != ''">
 			AND (LOWER(b.book_title) LIKE '%' || LOWER(#{q}) || '%'
-			OR LOWER(b.book_writer) LIKE '%' || LOWER(#{q}) || '%')
+			OR
+			LOWER(b.book_writer) LIKE '%' || LOWER(#{q}) || '%')
 		</if>
-		<if test="genreId != null">
-			AND b.genre_id = #{genreId}
+		<if test="genre_id != null">
+			AND b.genre_id = #{genre_id}
 		</if>
 		ORDER BY b.book_id ASC
 	</select>
@@ -113,8 +114,8 @@
 	<select id="getGenreList"
 		resultType="com.lgy.project_book_store.dto.GenreDTO">
 		SELECT
-		genre_id AS genreId,
-		genre_name AS genreName
+		genre_id,
+		genre_name
 		FROM Genre
 		ORDER BY genre_id ASC
 	</select>
