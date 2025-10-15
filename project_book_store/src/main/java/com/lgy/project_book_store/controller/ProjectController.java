@@ -83,7 +83,31 @@ public class ProjectController {
         session.invalidate();
         return "redirect:/login";
     }
-    
+	
+ // ------------------ 아이디 중복 체크 ------------------
+	@ResponseBody
+    @RequestMapping(value="/checkId", method=RequestMethod.POST)
+    public String checkId(@RequestParam("user_id") String id) {
+        int flag = service.checkId(id);
+        return (flag == 1) ? "Y" : "N";
+    }
+	
+ // ------------------ 아이디 찾기 ------------------
+	@RequestMapping("/findId")
+	public String findId() {
+		log.info("@# findId()");
+		
+		return "login/findId";
+	}
+	
+ // ------------------ 비밀번호 찾기 ------------------
+	@RequestMapping("/findPassword")
+	public String findPassword() {
+		log.info("@# findPassword()");
+		
+		return "login/findPassword";
+	}
+	
  // ------------------ 마이페이지 ------------------
     @RequestMapping(value="/mypage", method=RequestMethod.GET)
     public String mypage(Model model, HttpSession session) {
@@ -206,3 +230,4 @@ public class ProjectController {
         return "MyPage/purchaseList";
     }
 }
+
