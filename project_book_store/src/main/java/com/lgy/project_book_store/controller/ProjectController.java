@@ -30,112 +30,69 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class ProjectController {
-	//@Autowired
-	//private UserServicelmpl userService;
-    
-   	@GetMapping("/main")
-    public String main(HttpSession session) {
-        return "main"; 
-    }
+	@Autowired
+	   private UserServicelmpl userService;
+	    
+	    @GetMapping("/main")
+	    public String main(HttpSession session) {
+	        return "main"; 
+	    }
+	   
+	 // ------------------ 기존 회원가입 ------------------
+	    @RequestMapping(value="/register", method=RequestMethod.GET)
+	    public String register() {
+	        return "register";
+	    }
 
-	/*
- // ------------------ 기존 회원가입 ------------------
-    @RequestMapping(value="/register", method=RequestMethod.GET)
-    public String register() {
-        return "register";
-    }
+	    @RequestMapping(value="/register_ok", method=RequestMethod.POST)
+	    public String registerOk(@RequestParam Map<String, String> param, Model model) {
+	        if (param.get("user_email_chk") == null || param.get("user_email_chk").equals("")) {
+	            param.put("user_email_chk", "N");
+	        }
 
-    @RequestMapping(value="/register_ok", method=RequestMethod.POST)
-    public String registerOk(@RequestParam Map<String, String> param, Model model) {
-        if (param.get("user_email_chk") == null || param.get("user_email_chk").equals("")) {
-            param.put("user_email_chk", "N");
-        }
+	        int result = userService.register(param);
+	        if (result == 1) {
+	            return "redirect:/login";
+	        } else {
+	            model.addAttribute("msg", "회원가입 실패. 다시 시도하세요.");
+	            return "register";
+	        }
+	    }
 
-        int result = userService.register(param);
-        if (result == 1) {
-            return "redirect:/login";
-        } else {
-            model.addAttribute("msg", "회원가입 실패. 다시 시도하세요.");
-            return "register";
-        }
-    }
+	    // ------------------ 로그인 ------------------
+	    @RequestMapping(value="/login", method=RequestMethod.GET)
+	    public String login() {
+	        return "login"; // /WEB-INF/views/login.jsp
+	    }
 
-    // ------------------ 로그인 ------------------
-    @RequestMapping(value="/login", method=RequestMethod.GET)
-    public String login() {
-        return "login"; // /WEB-INF/views/login.jsp
-    }
+	    @RequestMapping(value="/login_yn", method=RequestMethod.POST)
+	    public String loginYn(@RequestParam Map<String, String> param, HttpSession session, Model model) {
+	        String userId = param.get("user_id");
+	        boolean ok = userService.loginYn(param);
 
-    @RequestMapping(value="/login_yn", method=RequestMethod.POST)
-    public String loginYn(@RequestParam Map<String, String> param, HttpSession session, Model model) {
-        String userId = param.get("user_id");
-        boolean ok = userService.loginYn(param);
+	        if (ok) {
+	           session.setAttribute("loginId", userId);
+	            // 로그인 성공 후 main.jsp로 리다이렉트
+	            return "redirect:/";
+	        } else {
+	            model.addAttribute("login_err", "아이디 또는 비밀번호가 잘못되었습니다.");
+	            return "login";
+	        }
+	    }
 
-        if (ok) {
-            // 로그인 성공 → 세션에 아이디 저장
-            session.setAttribute("loginId", userId);
-            return "login_ok"; // 로그인 성공 후 마이페이지 버튼이 있는 화면
-        } else {
-            model.addAttribute("login_err", "아이디 또는 비밀번호가 잘못되었습니다.");
-            return "login";
-        }
-    }
-
-    @RequestMapping(value="/logout", method=RequestMethod.GET)
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/main";
-    }
-	*/
+	    @RequestMapping(value="/logout", method=RequestMethod.GET)
+	    public String logout(HttpSession session) {
+	        session.invalidate();
+	        return "redirect:/main";
+	    }
 	
- @Autowired
-	private UserServicelmpl service;
-	
-	@RequestMapping("/login")
-	public String login() {
-		log.info("@# login()");
-		
-		return "login";
-	}
-	
-//	로그인화면->로그인 여부 판단
-	@RequestMapping("/login_yn")
-	public String login_yn(@RequestParam HashMap<String, String> param) {
-		log.info("@# login_yn()");
-		ArrayList<UserDTO> dtos = service.loginYn(param);
-//		아이디와 비밀번호가 일치
-		if (dtos.isEmpty()) {
-			return "login";
-		}else {
-			if (param.get("user_pw").equals(dtos.get(0).getUser_pw())) {
-				return "main";
-			} else {
-				return "login";
-			}
-		}
-	}
-	
-//	등록 화면 이동
-	@RequestMapping("/register")
-	public String register() {
-		log.info("@# register()");
-		
-		return "register";
-	}
-
-	@RequestMapping("/register_ok")
-	public String registerOk(@RequestParam HashMap<String, String> param) {
-		log.info("@# register_ok()");
-		service.register(param);
-		return "login";
-	}
- // ------------------ 아이디 중복 체크 ------------------
+	//아이디 중복 체크
 	@ResponseBody
-    @RequestMapping(value="/checkId", method=RequestMethod.POST)
-    public String checkId(@RequestParam("user_id") String id) {
-        int flag = service.checkId(id);
-        return (flag == 1) ? "Y" : "N";
-    }
+	@RequestMapping(value="/checkId", method=RequestMethod.POST)
+	public String checkId(@RequestParam("user_id") String id) {
+	    int flag = userService.checkId(id);
+	    return (flag == 1) ? "Y" : "N";
+	}
 	
  // ------------------ 마이페이지 ------------------
     @RequestMapping(value="/mypage", method=RequestMethod.GET)
@@ -258,6 +215,7 @@ public class ProjectController {
         return "MyPage/purchaseList";
     }
 }
+
 
 
 
