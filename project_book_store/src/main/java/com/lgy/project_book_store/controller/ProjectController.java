@@ -33,8 +33,10 @@ public class ProjectController {
 	//@Autowired
 	//private UserServicelmpl userService;
     
-    @Autowired
-    private SqlSession sqlSession;
+   	@GetMapping("/main")
+    public String main(HttpSession session) {
+        return "main"; 
+    }
 
 	/*
  // ------------------ 기존 회원가입 ------------------
@@ -82,7 +84,7 @@ public class ProjectController {
     @RequestMapping(value="/logout", method=RequestMethod.GET)
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:/main";
     }
 	*/
 	
@@ -256,6 +258,7 @@ public class ProjectController {
         return "MyPage/purchaseList";
     }
 }
+
 
 
 
