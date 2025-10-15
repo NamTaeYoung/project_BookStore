@@ -1,5 +1,7 @@
 package com.lgy.project_book_store.service;
 
+import java.util.HashMap;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -73,6 +75,12 @@ public class MailService {
         UserDAO dao = sqlSession.getMapper(UserDAO.class);
         return dao.findIdByEmail(email);
     }
+    
+//    // 비밀번호 찾기용: 이메일로 user_id 조회 
+//    public String findUserPassword(String id, String email) {
+//    	UserDAO dao = sqlSession.getMapper(UserDAO.class);
+//    	return dao.findIdByPassword(id, email);
+//    }
 
     // 일반 사용자 지정 메일 보내기
     public void sendCustomMail(String recipient, String subject, String htmlContent) {
@@ -87,5 +95,19 @@ public class MailService {
             e.printStackTrace();
         }
     }
+    
+//    // 일반 사용자 지정 메일 보내기(비밀번호 찾기)
+//    public void sendCustomMailPw(String recipient, String subject, String htmlContent) {
+//    	try {
+//    		MimeMessage message = mailSender.createMimeMessage();
+//    		message.setFrom(senderEmail);
+//    		message.setRecipients(MimeMessage.RecipientType.TO, recipient);
+//    		message.setSubject(subject);
+//    		message.setText(htmlContent, "UTF-8", "html");
+//    		mailSender.send(message);
+//    	} catch (MessagingException e) {
+//    		e.printStackTrace();
+//    	}
+//    }
 
 }
