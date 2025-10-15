@@ -1,5 +1,6 @@
 package com.lgy.project_book_store.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -25,10 +26,10 @@ public class SearchController {
     @GetMapping("/Search")
     public String bookList(
             @RequestParam(value = "q", required = false) String q,
-            @RequestParam(value = "genreId", required = false) Integer genreId,
+            @RequestParam(value = "genre_id", required = false) Integer genre_id,
             Model model) {
 
-        log.info("@# Search(), q={}, genreId={}", q, genreId);
+        log.info("@# Search(), q={}, genre_id={}", q, genre_id);
 
         SearchDAO dao = sqlSession.getMapper(SearchDAO.class);
 
@@ -38,29 +39,31 @@ public class SearchController {
         List<SearchDTO> list;
 
         // 검색어와 장르 조건에 따라 도서 목록 가져오기
-        if ((q == null || q.trim().isEmpty()) && genreId == null) {
-            list = dao.getBookList();
+        if ((q == null || q.trim().isEmpty()) && genre_id == null) {
+            // 검색어와 장르가 모두 없으면 리스트 비우기
+            list = new ArrayList<>();
             model.addAttribute("q", "");
         } else {
-            String searchKeyword = (q != null && !q.trim().isEmpty()) ? q.trim() : null;
-            list = dao.searchBooksByTitleAndGenre(searchKeyword, genreId);
+            String searchKeyword = (q == null || q.trim().isEmpty()) ? null : q.trim();
+            list = dao.searchBooksByTitleAndGenre(searchKeyword, genre_id);
             model.addAttribute("q", searchKeyword != null ? searchKeyword : "");
         }
 
+
         model.addAttribute("bookList", list);
-        model.addAttribute("selectedGenreId", genreId);
+        model.addAttribute("selectedGenreId", genre_id);
 
         return "Book/Search";
     }
 
     // /SearchDetail?bookId=번호
     @GetMapping("/SearchDetail")
-    public String bookDetail(@RequestParam("bookId") int bookId, Model model) {
+    public String bookDetail(@RequestParam("book_id") int book_id, Model model) {
         SearchDAO dao = sqlSession.getMapper(SearchDAO.class);
-        SearchDTO book = dao.getBookById(bookId);
+        SearchDTO book = dao.getBookById(book_id);
 
         if (book == null) {
-            log.warn("도서를 찾을 수 없습니다. bookId={}", bookId);
+            log.warn("도서를 찾을 수 없습니다. book_id={}", book_id);
             return "redirect:/Search"; // 도서가 없으면 검색 화면으로 리다이렉트
         }
 
