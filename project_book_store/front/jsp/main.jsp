@@ -25,34 +25,28 @@
       <img src="<c:url value='/resources/img/book_logo.png'/>" alt="책갈피 로고" class="brand-logo"/>
       <span class="brand-text" aria-hidden="true"></span>
     </a>
+
+    <!-- 로그인 전/후 분기 -->
     <div class="nav-right">
-  <c:choose>
-    <c:when test="${not empty sessionScope.LOGIN_USER_ID}">
-      <%-- 로그인 후: 000님 + 드롭다운 + 장바구니 --%>
-      <details class="user-menu">
-        <summary class="user-summary">
-          ${sessionScope.LOGIN_DISPLAY_NAME}님
-          <span aria-hidden="true">▾</span>
-        </summary>
-        <div class="user-dropdown" role="menu">
-          <a href="<c:url value='/mypage'/>" role="menuitem">마이페이지</a>
-          <c:if test="${sessionScope.LOGIN_IS_ADMIN}">
-            <a href="<c:url value='/admin'/>" role="menuitem">관리자모드</a>
-          </c:if>
-        </div>
-      </details>
+      <c:choose>
+        <%-- 로그인 전 --%>
+        <c:when test="${empty sessionScope.loginId}">
+          <a href="<c:url value='/login'/>">로그인</a>
+          <a href="<c:url value='/register'/>">회원가입</a>
+          <a href="<c:url value='/cart'/>">장바구니</a>
+        </c:when>
 
-      <a href="<c:url value='/cart'/>">장바구니</a>
-    </c:when>
-
-    <c:otherwise>
-      <%-- 로그인 전: 기존처럼 --%>
-      <a href="<c:url value='/login'/>">로그인</a>
-      <a href="<c:url value='/register'/>">회원가입</a>
-      <a href="<c:url value='/cart'/>">장바구니</a>
-    </c:otherwise>
-  </c:choose>
-</div>
+        <%-- 로그인 후 --%>
+        <c:otherwise>
+          <a href="<c:url value='/mypage'/>">마이페이지</a>
+          <a href="<c:url value='/cart'/>">장바구니</a>
+          <a href="<c:url value='/logout'/>">로그아웃</a>
+          <span style="color:#666; font-weight:700;">
+            ${sessionScope.loginId}님
+          </span>
+        </c:otherwise>
+      </c:choose>
+    </div>
   </nav>
 </header>
 
@@ -67,11 +61,20 @@
 </div>
 
 <main>
-  <!-- 히어로 -->
+  <!-- 히어로: 로그인 전/후 문구/버튼만 다르게 -->
   <section class="hero">
     <div class="hero-content">
-      <h1>온라인 서점에 오신 것을 환영합니다</h1>
-      <p>다양한 도서를 만나보세요</p>
+      <c:choose>
+        <c:when test="${empty sessionScope.loginId}">
+          <h1>온라인 서점에 오신 것을 환영합니다</h1>
+          <p>다양한 도서를 만나보세요</p>
+        </c:when>
+        <c:otherwise>
+          <h1>${sessionScope.loginId}님, 오늘도 반가워요 👋</h1>
+          <p>관심사 기반 추천과 최근 본 도서를 이어서 확인해보세요</p>
+        </c:otherwise>
+      </c:choose>
+
       <div class="main-search">
         <div class="search-box">
           <input type="text" class="search-input" placeholder="도서명, 저자명으로 검색하세요..." />
@@ -84,14 +87,22 @@
           </button>
         </div>
       </div>
-    </div>
+
   </section>
 
-  <!-- 이달의 책 -->
+  <!-- 이달의 책 / 개인화 추천 섹션 제목 분기 -->
   <section class="products-section">
     <div class="products-container">
-      <h2 class="section-title">이달의 책 😊</h2>
+      <c:choose>
+        <c:when test="${empty sessionScope.loginId}">
+          <h2 class="section-title">이달의 책 😊</h2>
+        </c:when>
+        <c:otherwise>
+          <h2 class="section-title">${sessionScope.loginId}님을 위한 추천 📚</h2>
+        </c:otherwise>
+      </c:choose>
 
+      <!-- 기존 카드 그대로 사용(나중에 서버데이터 바인딩하면 됨) -->
       <div class="products-grid" id="productsGrid">
         <div class="product-card">
           <div class="product-image"></div>
@@ -136,7 +147,7 @@
         </div>
       </div>
 
-      <!-- 숨김 추가 카드 -->
+      <!-- 숨김 추가 카드(그대로) -->
       <div class="products-grid hidden" id="additionalProducts" style="margin-top: 40px;">
         <div class="product-card">
           <div class="product-image"></div>
