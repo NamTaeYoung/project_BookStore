@@ -1,45 +1,70 @@
 package com.lgy.project_book_store.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.lgy.project_book_store.dao.CartDAO;
+import com.lgy.project_book_store.dao.SearchDAO;
 import com.lgy.project_book_store.dto.CartDTO;
-import com.lgy.project_book_store.service.CartService;
+import com.lgy.project_book_store.dto.SearchDTO;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
-public class CartController {
+@Slf4j
+public class SearchController {
 
     @Autowired
-    private CartService cartService;
+    private SqlSession sqlSession;
 
-    @PostMapping("/cartAdd")
-    public String addCart(@RequestParam("book_id") int book_id,
-                          @RequestParam(value="quantity", defaultValue="1") int quantity,
-                          HttpSession session,
-                          RedirectAttributes ra) {
+    // /Search?q=검색어&genreId=장르아이디
+    @GetMapping("/Search")
+    public String search(@RequestParam(value="q", required=false) String q,
+                         @RequestParam(value="genre_id", required=false) Integer genre_id,
+                         Model model) {
+        final String keyword = (q != null && !q.trim().isEmpty()) ? q.trim() : null;
+        // 탭의 '전체'는 0으로 오므로 DB 필터에선 null로 변환
+        final Integer genreFilter = (genre_id != null && genre_id == 0) ? null : genre_id;
 
-        // 로그인 사용자 ID (없으면 임시)
-        String user_id = (String) session.getAttribute("LOGIN_USER_ID");
-        if (user_id == null || user_id.isEmpty()) {
-            user_id = "testuser"; // 개발용. 실제론 로그인 시 세션에 저장
-            session.setAttribute("LOGIN_USER_ID", user_id);
+        SearchDAO dao = sqlSession.getMapper(SearchDAO.class);
+
+        model.addAttribute("genreList", dao.getGenreList());
+
+        List<SearchDTO> list;
+        if (keyword == null && genreFilter == null) {
+            // 검색 전 초기 화면: 안내 멘트만 보이게 하려면 빈 리스트 내려줌
+            list = java.util.Collections.emptyList();
+        } else if (keyword == null && genreFilter == null) {
+            list = dao.getBookList(); // (원하면 전체 노출로 바꿔도 됨)
+        } else {
+            list = dao.searchBooksByTitleAndGenre(keyword, genreFilter);
         }
 
-        CartDTO cart = new CartDTO();
-        cart.setUser_id(user_id);   // DTO가 String이면 그대로 사용
-        cart.setBook_id(book_id);
-        cart.setQuantity(quantity);
-
-        cartService.addCart(cart);  // 실제 DB 저장
-
-        // 상세 페이지로 되돌아가면서 팝업 트리거
-        ra.addAttribute("book_id", book_id);
-        ra.addAttribute("added", "1");
-        return "redirect:/SearchDetail";
+        model.addAttribute("bookList", list);
+        model.addAttribute("q", keyword == null ? "" : keyword);
+        model.addAttribute("selectedGenreId", genre_id == null ? 0 : genre_id);
+        return "Book/Search";
     }
+
+    @GetMapping("/SearchDetail")
+    public String detail(@RequestParam("book_id") int book_id, Model model) {
+        SearchDAO dao = sqlSession.getMapper(SearchDAO.class);
+        SearchDTO book = dao.getBookById(book_id);
+        if (book == null) return "redirect:/Search";
+        model.addAttribute("book", book);
+        return "Book/SearchDetail"; // 뷰리졸버 prefix/suffix와 합쳐짐
+    }
+    
+
 }
