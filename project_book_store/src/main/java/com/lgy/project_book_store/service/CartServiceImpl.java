@@ -50,7 +50,7 @@ public class CartServiceImpl implements CartService {
             System.out.println("장바구니 수량 업데이트 완료! cart_id=" + existing.getCart_id() + ", newQty=" + newQty);
         } else {
             // 새로운 항목이면 insert
-            cartDAO.insertCart(cart);
+            cartDAO.insertCartItem(cart);
             System.out.println("🆕 새로운 책 장바구니 추가 완료! user_id=" 
                                 + cart.getUser_id() + ", book_id=" + cart.getBook_id());
         }
