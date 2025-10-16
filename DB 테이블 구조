@@ -1,1 +1,23 @@
-
+--유저 테이블
+CREATE TABLE users (
+    user_id             VARCHAR2(20) PRIMARY KEY,
+    user_pw             VARCHAR2(100)NOT NULL,
+    user_email          VARCHAR2(30) NOT NULL,
+    user_email_chk      CHAR(1) DEFAULT 'N' NOT NULL,
+    user_phone_num      VARCHAR2(20) NOT NULL,
+    user_post_num       VARCHAR2(10),
+    user_address        VARCHAR2(200),
+    user_detail_address VARCHAR2(200),
+    user_name           VARCHAR2(20) NOT NULL,
+    user_nickname       VARCHAR2(20),
+    user_pwd_reset      VARCHAR2(100),
+    login_fail_count    NUMBER(1) DEFAULT 0,
+    last_fail_time      DATE ,
+    reg_date            DATE DEFAULT SYSDATE,
+    last_login_date     DATE,
+    login_type VARCHAR2(20) DEFAULT 'LOCAL',
+    social_id VARCHAR2(100)
+);
+//user 테이블에 이부분 추가됨
+ALTER TABLE users ADD (login_type VARCHAR2(20) DEFAULT 'LOCAL');
+ALTER TABLE users ADD (social_id VARCHAR2(100));
