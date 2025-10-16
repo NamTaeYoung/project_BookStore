@@ -1,6 +1,8 @@
 package com.lgy.project_book_store.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +41,21 @@ public class SearchController {
         List<SearchDTO> bookList;
 
         if (keyword == null && genreFilter == null) {
-            // 전체 도서 리스트
             bookList = dao.getBookList(); 
         } else {
-            // 검색어/장르 필터 적용
-            bookList = dao.searchBooksByTitleAndGenre(keyword, genreFilter);
+            // Map으로 파라미터 묶기
+        	Map<String, Object> params = new HashMap<>();
+        	params.put("keyword", keyword);
+        	params.put("genreFilter", genreFilter);
+
+        	bookList = dao.searchBooksByTitleAndGenre(params);
         }
+
 
         model.addAttribute("bookList", bookList);
         model.addAttribute("q", keyword == null ? "" : keyword);
         model.addAttribute("selectedGenreId", genre_id == null ? 0 : genre_id);
+        System.out.println("genre_id = " + genre_id + ", keyword = " + q);
 
         return "Book/Search";
     }
