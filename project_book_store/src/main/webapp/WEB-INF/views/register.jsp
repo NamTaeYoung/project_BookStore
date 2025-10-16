@@ -101,10 +101,12 @@ $(function(){
                     <!-- 아이디 -->
                     <div class="field">
                         <label class="label" for="user_id">아이디</label>
-                        <input class="input" id="user_id" name="user_id" type="text" inputmode="text" placeholder="영문/숫자 4~20자"
-                        	   required/>
-                       	<input type="button" id="checkId" value="중복검사"><br>
-						<div><span id="result_checkId" style="font-size:12px;"></span></div>
+                        <div class="row-inline">
+	                        <input class="input" id="user_id" name="user_id" type="text" inputmode="text" placeholder="영문/숫자 4~20자"
+	                        	   required/>
+	                       	<input type="button" class="btn-auth" id="checkId" value="중복검사">
+	                    </div>
+							<span id="result_checkId" style="font-size:12px; position:relative; top:-15px;""></span>
                     </div>
 
                     <!-- 비밀번호 / 확인 -->
@@ -193,4 +195,5 @@ $(function(){
     <!-- 외부 JS -->
   	<script src="<c:url value='/resources/js/register.js'/>"></script>
 </body>
+
 </html>
