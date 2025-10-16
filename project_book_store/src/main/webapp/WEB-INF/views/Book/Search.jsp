@@ -58,37 +58,7 @@
 		</nav>
 	</header>
 
-
 	<!-- Sub Header -->
-	<!-- 	<section class="subhead"> -->
-	<!-- 		<div class="subwrap"> -->
-	<!-- 			<div> -->
-	<!-- 				<h1 class="title">책 찾아보기</h1> -->
-	<!-- 				<div class="meta"> -->
-	<!-- 					<span id="countText">총 0권</span> · 카테고리/정렬로 골라보세요 -->
-	<!-- 				</div> -->
-	<!-- 			</div> -->
-	<!-- 			<div class="controls"> -->
-	<!-- 				<form id="searchForm" class="list-search" role="search" -->
-	<!-- 					aria-label="도서 검색"> -->
-	<!-- 					<div class="search-box"> -->
-	<!-- 						<input id="q" class="search-input" type="search" -->
-	<!-- 							placeholder="도서명, 저자명으로 검색하세요..." autocomplete="off" /> -->
-	<!-- 						<button class="search-button" id="searchBtn" aria-label="검색" -->
-	<!-- 							type="submit"> -->
-	<!-- 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" -->
-	<!-- 								stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> -->
-	<%--                 <circle cx="11" cy="11" r="7"></circle> --%>
-	<!--                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line> -->
-	<!--               </svg> -->
-	<!-- 						</button> -->
-	<!-- 					</div> -->
-	<!-- 				</form> -->
-	<!-- 			</div> -->
-	<!-- 		</div> -->
-	<!-- 	</section> -->
-
-	<!-- 내꺼 Sub Header -->
 	<section class="subhead">
 		<div class="subwrap">
 			<div>
@@ -119,22 +89,7 @@
 		</div>
 	</section>
 
-
 	<!-- Categories -->
-	<!-- 	<div class="cats" role="navigation" aria-label="카테고리"> -->
-	<!-- 		<div class="cats-inner"> -->
-	<!-- 			<div class="cat-left"> -->
-	<!-- 				<button class="cat-btn active" data-cat="all">전체</button> -->
-	<!-- 				<button class="cat-btn" data-cat="novel">소설</button> -->
-	<!-- 				<button class="cat-btn" data-cat="essay">에세이</button> -->
-	<!-- 				<button class="cat-btn" data-cat="humanity">인문/사회</button> -->
-	<!-- 				<button class="cat-btn" data-cat="science">과학/기술</button> -->
-	<!-- 				<button class="cat-btn" data-cat="economy">경제/경영</button> -->
-	<!-- 			</div> -->
-	<!-- 		</div> -->
-	<!-- 	</div> -->
-
-	<!-- 내꺼 Categories -->
 	<div class="cats" role="navigation" aria-label="카테고리">
 		<div class="cats-inner">
 			<div class="cat-left">
@@ -164,25 +119,8 @@
 	</div>
 
 	<!-- List -->
-	<!-- 	<main class="section"> -->
-	<!-- 		<div class="container"> -->
-	<!-- 			<h2 class="section-title">전체 도서</h2> -->
-
-	<!-- 			<div id="grid" class="grid"></div> -->
-	<!-- 			<div id="grid2" class="grid hidden" style="margin-top: 24px;"></div> -->
-
-	<!-- 			<div class="pager" id="pager" style="display: none;"> -->
-	<!-- 				<button class="page-btn active" data-page="1">1</button> -->
-	<!-- 				<button class="page-btn" data-page="2">2</button> -->
-	<!-- 			</div> -->
-	<!-- 		</div> -->
-	<!-- 	</main> -->
-
-	<!-- 내꺼 List -->
 	<main class="section">
 		<div class="container">
-			<!-- 			<h2 class="section-title">전체 도서</h2> -->
-
 			<div id="grid" class="grid"></div>
 			<div id="grid2" class="grid hidden" style="margin-top: 24px;"></div>
 
