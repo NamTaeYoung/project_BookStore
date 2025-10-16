@@ -181,7 +181,7 @@
 	<!-- 내꺼 List -->
 	<main class="section">
 		<div class="container">
-<!-- 			<h2 class="section-title">전체 도서</h2> -->
+			<!-- 			<h2 class="section-title">전체 도서</h2> -->
 
 			<div id="grid" class="grid"></div>
 			<div id="grid2" class="grid hidden" style="margin-top: 24px;"></div>
@@ -211,13 +211,14 @@
 		    title: "${fn:escapeXml(b.book_title)}",
 		    author: "${fn:escapeXml(b.book_writer)}",
 		    price: ${b.book_price},
-		    cat: "${fn:escapeXml(b.genre_id)}", <!-- 여기 genre_name이 아니라 genre_id 사용 -->
-		    <c:if test="${not empty b.book_image_path}">image: "${fn:escapeXml(b.book_image_path)}",</c:if>
-		    <c:if test="${not empty b.book_comm}">tag: "${fn:escapeXml(b.book_comm)}"</c:if>
+		    cat: "${fn:escapeXml(b.genre_id)}"
+		    <c:if test="${not empty b.book_image_path}">, image: "${fn:escapeXml(b.book_image_path)}"</c:if>
+		    <c:if test="${not empty b.book_comm}">, tag: "${fn:escapeXml(b.book_comm)}"</c:if>
 		}<c:if test="${!status.last}">,</c:if>
 		</c:forEach>
 		];
 	</script>
+
 
 	<!-- External JS -->
 	<script defer src="<c:url value='/resources/js/search.js'/>"></script>
