@@ -1,404 +1,208 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>책갈피 – 도서 관리의 혁신</title>
+@charset "UTF-8";
+:root {
+  --brand: #8b4f2f;
+  --brand-dark: #6e3f26;
+  --text: #1c1c1c;
+  --muted: #686868;
+  --bg: #ffffff;
+  --card: #f7f7f7;
+  --radius: 18px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .08);
+  --section-bg: #f8f9fa;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Noto Sans KR', sans-serif;
+  line-height:1.5;
+}
 
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-   href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap"
-   rel="stylesheet">
-<link
-   href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-   rel="stylesheet">
+/* Header */
+header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid #eee; }
+.nav{
+  max-width:1100px; margin:0 auto; padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.brand{
+  font-weight:800; letter-spacing:.08em; color:var(--brand);
+  text-decoration:none; display:flex; align-items:center; gap:.6rem;
+}
+.brand::before{ display:none; }
+.brand-logo{ display:block; height:30px; width:auto; }
+.brand-text{ font-weight:800; letter-spacing:.02em; color:var(--brand); }
+.nav-right{ display:flex; align-items:center; gap:18px; font-size:.95rem; }
+.nav-right a{ color:#333; text-decoration:none; }
+.nav-right a:hover{ color:var(--brand-dark) }
 
-<!-- 페이지 전용 CSS -->
-<link rel="stylesheet" href="<c:url value='/resources/css/main.css'/>">
-</head>
-<body>
+/* Sub header */
+.subhead{
+  background: linear-gradient(135deg, #665c54 0%, #8b4f2f 100%); /* 색 통일 */
+  color:#fff;
+  padding: 40px 20px;             /* 세로 크기(높이) 통일: 필요시 34→40으로 */
+  min-height: 140px;              /* 고정 최소 높이(선택) */
+  display:flex;                   /* 내용 수직 가운데 */
+  align-items:center;
+}
+.subwrap{
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;}
+}
+.title{ margin:0; font-size:clamp(24px, 3.2vw, 32px); font-weight:800 }
+.meta{ opacity:.9; margin-top:6px; font-size:15px }
+.controls{ display:flex; gap:10px; align-items:center }
 
-   <!-- 헤더 & 네비 -->
-   <header>
-      <nav class="nav" aria-label="주요 메뉴">
-         <a href="<c:url value='/'/>" class="brand"> <img
-            src="<c:url value='/resources/img/book_logo.png'/>" alt="책갈피 로고"
-            class="brand-logo" /> <span class="brand-text" aria-hidden="true"></span>
-         </a>
+/* search box (list top) */
+.list-search { display:flex; align-items:center; }
+.list-search .search-box { position:relative; max-width:420px; width:100%; }
+.list-search .search-input{
+  width:100%;
+  padding:14px 54px 14px 16px;
+  font-size:15px;
+  border:none; border-radius:70px; outline:none; transition:all .3s ease;
+  background:rgba(255,255,255,.95);
+  box-shadow:0 8px 32px rgba(0,0,0,.2);
+  backdrop-filter:blur(10px);
+}
+.list-search .search-input::placeholder{ color:#666; }
+.list-search .search-input:focus{ background:#fff; box-shadow:0 12px 40px rgba(0,0,0,.3); }
+.list-search .search-button{
+  position:absolute; right:6px; top:50%; transform:translateY(-50%);
+  background:var(--brand); border:none; border-radius:50%;
+  width:38px; height:38px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:all .2s ease;
+}
+.list-search .search-button:hover{ background:var(--brand-dark); transform:translateY(-50%) scale(1.05); }
+.list-search .search-button svg{ width:18px; height:18px; color:#fff; }
+.subhead .list-search .search-input{ box-shadow:0 8px 28px rgba(0,0,0,.25); }
 
-         <!-- 로그인 전/후 분기 -->
-         <div class="nav-right">
-            <c:choose>
-               <%-- 로그인 전 --%>
-               <c:when test="${empty sessionScope.loginId}">
-                  <a href="<c:url value='/login'/>">로그인</a>
-                  <a href="<c:url value='/register'/>">회원가입</a>
-                  <a href="<c:url value='/cart'/>">장바구니</a>
-               </c:when>
+/* Categories */
+.cats{ position:sticky; top:66px; z-index:45; background:#fff; border-bottom:1px solid #eee; }
+.cats-inner{
+  max-width:1100px; margin:0 auto; padding:12px 20px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+}
+.cat-left{ display:flex; flex-wrap:wrap; gap:10px; }
+.cat-btn{
+  border:1px solid #e8e8e8; background:#fff; color:#333; padding:8px 14px;
+  border-radius:999px; cursor:pointer; font-weight:600; transition:.15s;
+  box-shadow:0 2px 10px rgba(0,0,0,.03)
+}
+.cat-btn:hover{ border-color:#ddd }
+.cat-btn.active{ background:var(--brand); color:#fff; border-color:var(--brand) }
 
-               <%-- 로그인 후 --%>
-               <c:otherwise>
-                  <a href="<c:url value='/mypage'/>">마이페이지</a>
-                  <a href="<c:url value='/cart'/>">장바구니</a>
-                  <a href="<c:url value='/logout'/>">로그아웃</a>
-                  <span style="color: #666; font-weight: 700;">
-                     ${sessionScope.loginId}님 </span>
-               </c:otherwise>
-            </c:choose>
-         </div>
-      </nav>
-   </header>
+/* Grid */
+.section{ background:var(--section-bg); padding:60px 0 }
+.container{ max-width:1100px; margin:0 auto; padding:0 20px }
+.section-title{ font-weight:800; font-size:22px; margin:0 0 18px }
+.grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:28px }
+.grid.hidden{ display:none }
+.card{
+  background:#fff; border-radius:var(--radius); box-shadow:var(--shadow);
+  overflow:hidden; transition:.2s; display:flex; flex-direction:column
+}
+.card:hover{ transform:translateY(-5px); box-shadow:0 15px 40px rgba(0,0,0,.12) }
+.thumb{
+  height:200px; background:linear-gradient(135deg,#f5f5f5,#e8e8e8);
+  display:flex; align-items:center; justify-content:center; position:relative;
+  overflow: hidden;
+}
+.thumb::before{ content:"📚"; font-size:48px; opacity:.35 }
 
-   <!-- 상단 프로모션 -->
-   <div class="promo" role="note" aria-label="프로모션">
-      <div class="promo-content">
-         <div class="promo-nav">
-            <a href="<c:url value='/Search'/>" class="nav-search">도서</a> <a
-               href="<c:url value='/board'/>" class="nav-board">게시판</a>
-         </div>
-      </div>
-   </div>
+/* 이미지 스타일 추가 */
+.thumb img {
+  width: auto;      /* 원하는 가로 크기 */
+  height: 100%;     /* 원하는 세로 크기 */
+  object-fit: cover;  /* 비율 유지하며 잘림 방지 */
+  display: block;
+  position: absolute; /* thumb 위에 표시 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 중앙 정렬 */
+  z-index: 1;
+  border-radius: 0;
+}
 
-   <main>
-      <!-- 히어로: 로그인 전/후 문구/버튼만 다르게 -->
-      <section class="hero">
-         <div class="hero-content">
-            <c:choose>
-               <c:when test="${empty sessionScope.loginId}">
-                  <h1>온라인 서점에 오신 것을 환영합니다</h1>
-                  <p>다양한 도서를 만나보세요</p>
-               </c:when>
-               <c:otherwise>
-                  <h1>${sessionScope.loginId}님,오늘도 반가워요 👋</h1>
-                  <p>관심사 기반 추천과 최근 본 도서를 이어서 확인해보세요</p>
-               </c:otherwise>
-            </c:choose>
+.badge{
+  position:absolute; left:12px; top:12px; background:#000; color:#fff; font-size:12px;
+  padding:4px 8px; border-radius:8px; opacity:.8; z-index: 2; /* 이미지 위 */
+}
+.info {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+  min-height: 150px; /* 카드 내용 높이 확보 (필요 시 조정) */
+}
 
-            <div class="main-search">
-               <form action="<c:url value='/Search'/>" method="get"
-                  class="search-box">
-                  <input type="text" name="q" class="search-input"
-                     placeholder="도서명, 저자명으로 검색하세요..." required />
-                  <button type="submit" class="search-button" aria-label="검색">
-                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="7"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-                  </button>
-               </form>
-            </div>
-      </section>
+/* 가격과 장바구니 버튼 정렬 */
+.info-bottom {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;  /* 가격 왼쪽, 버튼 오른쪽 */
+}
 
-      <!-- 이달의 책 / 개인화 추천 섹션 제목 분기 -->
-      <section class="products-section">
-         <div class="products-container">
-            <c:choose>
-               <c:when test="${empty sessionScope.loginId}">
-                  <h2 class="section-title">이달의 책 😊</h2>
-               </c:when>
-               <c:otherwise>
-                  <h2 class="section-title">${sessionScope.loginId}님을위한 추천 📚</h2>
-               </c:otherwise>
-            </c:choose>
+/* 장바구니 버튼 디자인 */
+.cart-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
 
-            <!-- 기존 카드 그대로 사용(나중에 서버데이터 바인딩하면 됨) -->
-            <div class="products-grid" id="productsGrid">
-               <div class="product-card">
-                  <div class="product-image"></div>
-                  <div class="product-info">
-                     <h3 class="product-title">책장 정리왕</h3>
-                     <div class="product-price">4,000원</div>
-                     <div class="product-rating">
-                        <div class="stars">
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                        </div>
-                        <span class="rating-text">0 (0)</span>
-                     </div>
-                  </div>
-               </div>
+/* 아이콘 크기 */
+.cart-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #fff;
+}
 
-               <div class="product-card">
-                  <div class="product-image"></div>
-                  <div class="product-info">
-                     <h3 class="product-title">리딩 트래커</h3>
-                     <div class="product-price">3,000원</div>
-                     <div class="product-rating">
-                        <div class="stars">
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                        </div>
-                        <span class="rating-text">0 (0)</span>
-                     </div>
-                  </div>
-               </div>
+/* hover 효과 */
+.cart-btn:hover {
+  background: var(--brand-dark);
+  transform: translateY(-2px);
+}
+.title-sm{ margin:0; font-size:18px; font-weight:700 }
+.author{ margin:0; font-size:14px; color:var(--muted) }
+.price{ margin:2px 0 0; font-size:16px; font-weight:800; color:var(--brand) }
+.rating{ display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted) }
+.stars{ display:flex; gap:2px }
+.star{
+  width:16px; height:16px; background:#ddd;
+  clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)
+}
 
-               <div class="product-card">
-                  <div class="product-image"></div>
-                  <div class="product-info">
-                     <h3 class="product-title">도서관 매니저</h3>
-                     <div class="product-price">2,000원</div>
-                     <div class="product-rating">
-                        <div class="stars">
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                        </div>
-                        <span class="rating-text">0 (0)</span>
-                     </div>
-                  </div>
-               </div>
-            </div>
+/* Pager */
+.pager{ display:flex; gap:8px; justify-content:center; margin-top:30px }
+.page-btn{
+  border:1px solid #e8e8e8; background:#fff; padding:8px 14px; border-radius:10px; cursor:pointer; font-weight:600
+}
+.page-btn.active{ background:var(--brand); color:#fff; border-color:var(--brand) }
 
-            <!-- 숨김 추가 카드(그대로) -->
-            <div class="products-grid hidden" id="additionalProducts"
-               style="margin-top: 40px;">
-               <div class="product-card">
-                  <div class="product-image"></div>
-                  <div class="product-info">
-                     <h3 class="product-title">스마트 도서 추천</h3>
-                     <div class="product-price">5,000원</div>
-                     <div class="product-rating">
-                        <div class="stars">
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                        </div>
-                        <span class="rating-text">0 (0)</span>
-                     </div>
-                  </div>
-               </div>
-
-               <div class="product-card">
-                  <div class="product-image"></div>
-                  <div class="product-info">
-                     <h3 class="product-title">독서 통계 분석</h3>
-                     <div class="product-price">3,500원</div>
-                     <div class="product-rating">
-                        <div class="stars">
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                        </div>
-                        <span class="rating-text">0 (0)</span>
-                     </div>
-                  </div>
-               </div>
-
-               <div class="product-card">
-                  <div class="product-image"></div>
-                  <div class="product-info">
-                     <h3 class="product-title">도서 대출 관리</h3>
-                     <div class="product-price">2,500원</div>
-                     <div class="product-rating">
-                        <div class="stars">
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                           <div class="star"></div>
-                        </div>
-                        <span class="rating-text">0 (0)</span>
-                     </div>
-                  </div>
-               </div>
-            </div>
-
-            <button class="load-more-btn" id="loadMoreBtn">더보기</button>
-         </div>
-      </section>
-
-      <!-- 책 속 한 줄 -->
-      <section class="quotes-section">
-         <div class="quotes-container">
-            <div class="quotes-header">
-               <h2 class="quotes-title">책 속 한 줄</h2>
-               <p class="quotes-sub">오늘의 문장을 골라 담아보세요 ✨</p>
-            </div>
-
-            <div class="q-wrap">
-               <div class="q-track" id="quotesTrack">
-                  <!-- 카드들 -->
-                  <article class="q-card">
-                     <div class="q-bar"></div>
-                     <div class="q-body">
-                        <p class="q-quote">위험과 기회는 종이 한 장 차이다. 한 걸음 더 내딛는 용기가 삶을
-                           바꾼다.</p>
-                        <div class="q-meta">
-                           <div class="q-book">
-                              <div class="q-thumb" aria-hidden="true"></div>
-                              <div class="q-info">
-                                 <span class="q-title">책이 들려주는 이야기</span> <span
-                                    class="q-author">민음사</span>
-                              </div>
-                           </div>
-                           <span class="q-pub">추천</span>
-                        </div>
-                     </div>
-                  </article>
-
-                  <article class="q-card">
-                     <div class="q-bar"></div>
-                     <div class="q-body">
-                        <p class="q-quote">나이가 들수록 단단해지는 건 껍질이 아니라 마음의 방향이다.</p>
-                        <div class="q-meta">
-                           <div class="q-book">
-                              <div class="q-thumb"></div>
-                              <div class="q-info">
-                                 <span class="q-title">책이 들려주는 이야기</span> <span
-                                    class="q-author">수오서재</span>
-                              </div>
-                           </div>
-                           <span class="q-pub">오늘의 한줄</span>
-                        </div>
-                     </div>
-                  </article>
-
-                  <article class="q-card">
-                     <div class="q-bar"></div>
-                     <div class="q-body">
-                        <p class="q-quote">작게는 마음 한켠, 크게는 세계를 움직이는 문장들이 있다.</p>
-                        <div class="q-meta">
-                           <div class="q-book">
-                              <div class="q-thumb"></div>
-                              <div class="q-info">
-                                 <span class="q-title">책이 들려주는 이야기</span> <span
-                                    class="q-author">한겨레출판</span>
-                              </div>
-                           </div>
-                           <span class="q-pub">NEW</span>
-                        </div>
-                     </div>
-                  </article>
-
-                  <article class="q-card">
-                     <div class="q-bar"></div>
-                     <div class="q-body">
-                        <p class="q-quote">좋은 문장은 하루를 바꾸고, 좋은 책은 삶을 바꾼다.</p>
-                        <div class="q-meta">
-                           <div class="q-book">
-                              <div class="q-thumb"></div>
-                              <div class="q-info">
-                                 <span class="q-title">책이 들려주는 이야기</span> <span
-                                    class="q-author">민음사</span>
-                              </div>
-                           </div>
-                           <span class="q-pub">베스트</span>
-                        </div>
-                     </div>
-                  </article>
-               </div>
-
-               <div class="q-nav">
-                  <button type="button" class="q-btn" id="quotesPrev"
-                     aria-label="이전">‹</button>
-                  <button type="button" class="q-btn" id="quotesNext"
-                     aria-label="다음">›</button>
-               </div>
-            </div>
-         </div>
-      </section>
-
-      <!-- 후기 -->
-      <section class="testimonials-section">
-         <div class="testimonials-container">
-            <h2 class="testimonials-title">10,000명이 선택한 도서관리 시스템!</h2>
-            <div class="testimonials-grid">
-               <div class="testimonial-card">
-                  <h3 class="testimonial-title">간편한 사용법으로 만족도가 높습니다.</h3>
-                  <p class="testimonial-text">도서 대출과 반납이 너무 쉬워졌어요. 이제 도서관 업무가 한결
-                     수월해졌습니다!</p>
-                  <div class="testimonial-author">김00님</div>
-               </div>
-               <div class="testimonial-card">
-                  <h3 class="testimonial-title">효율적인 관리로 시간을 절약합니다.</h3>
-                  <p class="testimonial-text">도서 관리가 체계적으로 이루어져 업무 효율이 크게
-                     향상되었습니다. 추천합니다!</p>
-                  <div class="testimonial-author">박00님</div>
-               </div>
-               <div class="testimonial-card">
-                  <h3 class="testimonial-title">사용자 경험이 매우 뛰어납니다.</h3>
-                  <p class="testimonial-text">도서관 이용자들이 쉽게 접근할 수 있어 사용자 만족도가
-                     높습니다. 인터페이스도 직관적입니다.</p>
-                  <div class="testimonial-author">이00님</div>
-               </div>
-            </div>
-         </div>
-      </section>
-
-      <!-- FAQ -->
-      <section class="faq-section">
-         <div class="faq-container">
-            <h2 class="section-title">자주 묻는 질문</h2>
-
-            <div class="faq-item">
-               <div class="faq-question">
-                  <span>배송 기간은 얼마나 걸리나요?</span> <span class="faq-icon">▼</span>
-               </div>
-               <div class="faq-answer">일반 배송은 지역에 따라 1~3일 소요됩니다. 택배사 사정에 따라
-                  다소 지연될 수 있습니다.</div>
-            </div>
-
-            <div class="faq-item">
-               <div class="faq-question">
-                  <span>단순 변심으로도 반품이 가능한가요?</span> <span class="faq-icon">▼</span>
-               </div>
-               <div class="faq-answer">상품 수령 후 7일 이내라면 미개봉 상태에 한해 반품이 가능합니다.
-                  왕복 배송비가 부과될 수 있습니다.</div>
-            </div>
-
-            <div class="faq-item">
-               <div class="faq-question">
-                  <span>주문 내역은 어디서 확인할 수 있나요?</span> <span class="faq-icon">▼</span>
-               </div>
-               <div class="faq-answer">상단의 마이페이지에서 주문 내역을 확인할 수 있으며, 주문번호로
-                  상세 조회가 가능합니다.</div>
-            </div>
-
-            <div class="faq-item">
-               <div class="faq-question">
-                  <span>배송지는 변경하고 싶은데 어떻게 변경하나요?</span> <span class="faq-icon">▼</span>
-               </div>
-               <div class="faq-answer">상품 출고 전까지 마이페이지 또는 고객센터를 통해 주소 변경이
-                  가능합니다.</div>
-            </div>
-         </div>
-      </section>
-   </main>
-
-   <!-- 푸터 -->
-   <footer class="footer">
-      <div class="footer-container">
-         <div class="footer-brand">BRAND</div>
-         <div class="footer-info">
-            BRAND | 대표자 : 홍길동 | 사업자번호 : 123-34-56789<br> 통신판매업 :
-            0000-부산시-0000호 | 개인정보보호책임자 : 홍길동 | 이메일 : qshop@naver.com<br>
-            전화번호: 00-0000-0000 | 주소 : 부산시 부산진구 범내골
-         </div>
-         <div class="footer-links">
-            <a href="#">이용약관</a> <a href="#">개인정보처리방침</a>
-         </div>
-      </div>
-   </footer>
-
-   <!-- 페이지 전용 JS -->
-   <script src="<c:url value='/resources/js/main.js'/>"></script>
-</body>
-</html>
+/* Responsive */
+@media (max-width:920px){
+  .grid{ grid-template-columns:repeat(2, 1fr) }
+  .subwrap{ grid-template-columns:1fr }
+}
+@media (max-width:560px){
+  .grid{ grid-template-columns:1fr }
+  .controls{ flex-wrap:wrap }
+}
+@media (max-width:480px){
+  .nav-right{ gap:12px; font-size:.92rem }
+  .brand-logo{ height:24px; }
+}
