@@ -4,7 +4,7 @@
 <mapper namespace="com.lgy.project_book_store.dao.CartDAO">
 
   <!-- INSERT: 하나만 남김 -->
-  <insert id="insertCart" parameterType="com.lgy.project_book_store.dto.CartDTO">
+  <insert id="insertCartItem" parameterType="com.lgy.project_book_store.dto.CartDTO">
     INSERT INTO cart (cart_id, user_id, book_id, quantity, cart_date)
     VALUES (cart_seq.NEXTVAL, #{user_id}, #{book_id}, #{quantity}, SYSDATE)
   </insert>
