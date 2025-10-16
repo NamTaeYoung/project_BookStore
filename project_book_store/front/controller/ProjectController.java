@@ -1,14 +1,11 @@
 package com.lgy.project_book_store.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lgy.project_book_store.dao.BookBuyDAO;
 import com.lgy.project_book_store.dao.CartDAO;
 import com.lgy.project_book_store.dto.BookBuyDTO;
 import com.lgy.project_book_store.dto.CartDTO;
-import com.lgy.project_book_store.dto.UserDTO;
 import com.lgy.project_book_store.service.UserServicelmpl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -30,62 +27,70 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class ProjectController {
-   @Autowired
-   private UserServicelmpl userService;
-    
-    @GetMapping("/main")
-    public String main(HttpSession session) {
-        return "main"; 
-    }
-   
- // ------------------ 기존 회원가입 ------------------
-    @RequestMapping(value="/register", method=RequestMethod.GET)
-    public String register() {
-        return "register";
-    }
+	@Autowired
+	   private UserServicelmpl userService;
+	    
+	    @GetMapping("/main")
+	    public String main(HttpSession session) {
+	        return "main"; 
+	    }
+	   
+	 // ------------------ 기존 회원가입 ------------------
+	    @RequestMapping(value="/register", method=RequestMethod.GET)
+	    public String register() {
+	        return "register";
+	    }
 
-    @RequestMapping(value="/register_ok", method=RequestMethod.POST)
-    public String registerOk(@RequestParam Map<String, String> param, Model model) {
-        if (param.get("user_email_chk") == null || param.get("user_email_chk").equals("")) {
-            param.put("user_email_chk", "N");
-        }
+	    @RequestMapping(value="/register_ok", method=RequestMethod.POST)
+	    public String registerOk(@RequestParam Map<String, String> param, Model model) {
+	        if (param.get("user_email_chk") == null || param.get("user_email_chk").equals("")) {
+	            param.put("user_email_chk", "N");
+	        }
 
-        int result = userService.register(param);
-        if (result == 1) {
-            return "redirect:/login";
-        } else {
-            model.addAttribute("msg", "회원가입 실패. 다시 시도하세요.");
-            return "register";
-        }
-    }
+	        int result = userService.register(param);
+	        if (result == 1) {
+	            return "redirect:/login";
+	        } else {
+	            model.addAttribute("msg", "회원가입 실패. 다시 시도하세요.");
+	            return "register";
+	        }
+	    }
 
-    // ------------------ 로그인 ------------------
-    @RequestMapping(value="/login", method=RequestMethod.GET)
-    public String login() {
-        return "login"; // /WEB-INF/views/login.jsp
-    }
+	    // ------------------ 로그인 ------------------
+	    @RequestMapping(value="/login", method=RequestMethod.GET)
+	    public String login() {
+	        return "login"; // /WEB-INF/views/login.jsp
+	    }
 
-    @RequestMapping(value="/login_yn", method=RequestMethod.POST)
-    public String loginYn(@RequestParam Map<String, String> param, HttpSession session, Model model) {
-        String userId = param.get("user_id");
-        boolean ok = userService.loginYn(param);
+	    @RequestMapping(value="/login_yn", method=RequestMethod.POST)
+	    public String loginYn(@RequestParam Map<String, String> param, HttpSession session, Model model) {
+	        String userId = param.get("user_id");
+	        boolean ok = userService.loginYn(param);
 
-        if (ok) {
-           session.setAttribute("loginId", userId);
-            // 로그인 성공 후 main.jsp로 리다이렉트
-            return "redirect:/";
-        } else {
-            model.addAttribute("login_err", "아이디 또는 비밀번호가 잘못되었습니다.");
-            return "login";
-        }
-    }
+	        if (ok) {
+	           session.setAttribute("loginId", userId);
+	            // 로그인 성공 후 main.jsp로 리다이렉트
+	            return "redirect:/";
+	        } else {
+	            model.addAttribute("login_err", "아이디 또는 비밀번호가 잘못되었습니다.");
+	            return "login";
+	        }
+	    }
 
-    @RequestMapping(value="/logout", method=RequestMethod.GET)
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/main";
-    }
-    
+	    @RequestMapping(value="/logout", method=RequestMethod.GET)
+	    public String logout(HttpSession session) {
+	        session.invalidate();
+	        return "redirect:/main";
+	    }
+	
+	//아이디 중복 체크
+	@ResponseBody
+	@RequestMapping(value="/checkId", method=RequestMethod.POST)
+	public String checkId(@RequestParam("user_id") String id) {
+	    int flag = userService.checkId(id);
+	    return (flag == 1) ? "Y" : "N";
+	}
+	
  // ------------------ 마이페이지 ------------------
     @RequestMapping(value="/mypage", method=RequestMethod.GET)
     public String mypage(Model model, HttpSession session) {
@@ -94,7 +99,7 @@ public class ProjectController {
 
         Map<String, Object> user = userService.getUser(loginId);
         model.addAttribute("user", user);
-        return "MyPage/myinfo"; // /WEB-INF/views/myinfo.jsp
+        return "/MyPage/myinfo"; // /WEB-INF/views/myinfo.jsp
     }
 
     @RequestMapping(value="/mypage/edit", method=RequestMethod.GET)
@@ -104,7 +109,7 @@ public class ProjectController {
 
         Map<String, Object> user = userService.getUser(loginId);
         model.addAttribute("user", user);
-        return "MyPage/myinfo_edit";
+        return "/MyPage/myinfo_edit";
     }
 
     @RequestMapping(value="/mypage/update", method=RequestMethod.POST)
@@ -122,7 +127,7 @@ public class ProjectController {
     public String withdraw(HttpSession session) {
         String loginId = (String) session.getAttribute("loginId");
         if (loginId == null) return "redirect:/login";
-        return "MyPage/withdraw"; // /WEB-INF/views/withdraw.jsp
+        return "/MyPage/withdraw"; // /WEB-INF/views/withdraw.jsp
     }
 
     // 탈퇴 처리
@@ -140,15 +145,14 @@ public class ProjectController {
             session.invalidate(); // 세션 종료
         }
         model.addAttribute("result", res); // JSP에서 alert 처리
-        return "MyPage/withdraw";
+        return "/MyPage/withdraw";
     }
     
-//  로그인 세션
     private String getLoginId(HttpSession session) {
         return (String) session.getAttribute("loginId");
     }
     
-//   장바구니 화면 이동
+//	장바구니 화면 이동
     @RequestMapping("/cart")
     public String cart(Model model, HttpSession session) {
         log.info("@# cart()");
@@ -194,7 +198,7 @@ public class ProjectController {
         return "redirect:/MyPage/purchaseList";
     }
     
-//   마이페이지/구매 기록 화면 이동
+//	마이페이지/구매 기록 화면 이동
     @RequestMapping("/MyPage/purchaseList")
     public String purchaseList(Model model, HttpSession session) {
         log.info("@# purchaseList()");
@@ -207,4 +211,20 @@ public class ProjectController {
 
         return "MyPage/purchaseList";
     }
+    @GetMapping("/search")
+    public String search() {
+        // /WEB-INF/views/search/search.jsp 로 forward
+        return "search";
+    }
+    
+    @GetMapping("/board")
+    public String board() {
+        // /WEB-INF/views/search/search.jsp 로 forward
+        return "board";
+    }
 }
+
+
+
+
+
