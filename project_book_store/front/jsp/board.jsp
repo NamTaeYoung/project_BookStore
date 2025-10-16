@@ -32,13 +32,14 @@
     </nav>
   </header>
 
-  <!-- 메인 콘텐츠 -->
+  <!--  메인 콘텐츠 -->
   <main class="main-content">
-    <!-- 페이지 헤더 -->
+    페이지 헤더
     <div class="page-header">
       <h1 class="page-title">게시판</h1>
       <p class="page-subtitle">도서관 관련 소식과 정보를 공유하는 공간입니다</p>
-    </div>
+    </div> 
+   
 
     <!-- 게시판 컨트롤 -->
     <div class="board-controls">
