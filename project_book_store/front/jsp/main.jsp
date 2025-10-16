@@ -54,7 +54,7 @@
 <div class="promo" role="note" aria-label="프로모션">
   <div class="promo-content">
     <div class="promo-nav">
-      <a href="<c:url value='/category'/>" class="nav-category">카테고리</a>
+      <a href="<c:url value='/search'/>" class="nav-search">도서</a>
       <a href="<c:url value='/board'/>" class="nav-board">게시판</a>
     </div>
   </div>
