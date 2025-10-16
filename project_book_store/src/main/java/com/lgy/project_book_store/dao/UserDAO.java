@@ -3,6 +3,8 @@ package com.lgy.project_book_store.dao;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.lgy.project_book_store.dto.UserDTO;
 
 public interface UserDAO {
@@ -21,12 +23,14 @@ public interface UserDAO {
     public int checkEmail(String user_email);
     // 이메일로 아이디를 찾음
     public String findIdByEmail(String user_email);
-//    // 아이디, 이메일로 비밀번호를 찾음
-//    public String findPwByIdEmail(HashMap<String, String> param);
-//    //사용자의 아이디와 생성된 토큰을 받아, 데이터베이스 토큰을 저장(사용자가 재설정할 권한이 있음을 증명)
-//    public void saveResetToken(HashMap<String, String> param);
-//    //토큰으로 비밀번호 업데이트
-//    public boolean updatePasswordByToken(HashMap<String, String> param);
+    // 아이디, 이메일로 비밀번호를 찾음
+    public String findPwByIdEmail(Map<String, String> param);
+    //사용자의 아이디와 생성된 토큰을 받아, 데이터베이스 토큰을 저장(사용자가 재설정할 권한이 있음을 증명)
+    public int saveResetToken(Map<String, String> param);
+    //토큰으로 사용자 조회
+    public UserDTO findUserByResetToken(String user_pwd_reset);
+    //토큰으로 비밀번호 업데이트
+    public int updatePasswordByToken(Map<String, String> param);
 }
 
 
