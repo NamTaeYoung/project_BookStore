@@ -22,18 +22,36 @@
 <body>
 
   <!-- Header -->
-  <header>
-    <nav class="nav" aria-label="주요 메뉴">
-      <a href="<c:url value='/'/>" class="brand">
-        <img src="<c:url value='/resources/img/book_logo.png'/>" alt="책갈피 로고" class="brand-logo" />
-      </a>
-      <div class="nav-right">
-        <a href="<c:url value='/login'/>">로그인</a>
-        <a href="<c:url value='/register'/>">회원가입</a>
-        <a href="<c:url value='/cart'/>">장바구니</a>
-      </div>
-    </nav>
-  </header>
+<header>
+  <nav class="nav" aria-label="주요 메뉴">
+    <a href="<c:url value='/'/>" class="brand">
+      <img src="<c:url value='/resources/img/book_logo.png'/>" alt="책갈피 로고" class="brand-logo"/>
+      <span class="brand-text" aria-hidden="true"></span>
+    </a>
+
+    <!-- 로그인 전/후 분기 -->
+    <div class="nav-right">
+      <c:choose>
+        <%-- 로그인 전 --%>
+        <c:when test="${empty sessionScope.loginId}">
+          <a href="<c:url value='/login'/>">로그인</a>
+          <a href="<c:url value='/register'/>">회원가입</a>
+          <a href="<c:url value='/cart'/>">장바구니</a>
+        </c:when>
+
+        <%-- 로그인 후 --%>
+        <c:otherwise>
+          <a href="<c:url value='/mypage'/>">마이페이지</a>
+          <a href="<c:url value='/cart'/>">장바구니</a>
+          <a href="<c:url value='/logout'/>">로그아웃</a>
+          <span style="color:#666; font-weight:700;">
+            ${sessionScope.loginId}님
+          </span>
+        </c:otherwise>
+      </c:choose>
+    </div>
+  </nav>
+</header>
 
   <!-- Sub Header -->
   <section class="subhead">
