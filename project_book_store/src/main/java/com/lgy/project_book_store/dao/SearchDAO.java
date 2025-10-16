@@ -1,6 +1,7 @@
 package com.lgy.project_book_store.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -22,8 +23,5 @@ public interface SearchDAO {
     List<GenreDTO> getGenreList();
 
     // 검색어 + 장르로 도서 검색 (검색어 또는 장르가 null 가능)
-    List<SearchDTO> searchBooksByTitleAndGenre(
-            @Param("q") String q, 
-            @Param("genreId") Integer genreId
-    );
+    List<SearchDTO> searchBooksByTitleAndGenre(Map<String, Object> params);
 }
