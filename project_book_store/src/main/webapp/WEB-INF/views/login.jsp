@@ -42,6 +42,9 @@
         <h1 class="auth-title">로그인</h1>
         <p class="auth-desc">책갈피에 오신 것을 환영합니다. 계정으로 로그인해주세요.</p>
 
+        //로그인 시 오류 메시지 출력
+        <c:if test="${not empty login_err}"></c:if>
+
         <form id="loginForm" novalidate method="post" action="login_yn">
           <div class="field">
             <label class="label" for="user_id">로그인</label>
@@ -55,6 +58,10 @@
               <button type="button" class="password-toggle" aria-label="비밀번호 보기/숨기기"></button>
             </div>
           </div>
+
+          <div class="alert alert-danger" style="color:red; margin-bottom:5px; font-size:12px;position:relative; top:5px;">
+		  	    ${login_err}
+		      </div>
 
           <div class="forgot-links">
             <a href="#" class="forgot" onclick="showAccountFindModal()">계정을 잊으셨나요?</a>
@@ -130,4 +137,5 @@
   <script src="<c:url value='/resources/js/login.js'/>"></script>
 </body>
 </html>
+
 
