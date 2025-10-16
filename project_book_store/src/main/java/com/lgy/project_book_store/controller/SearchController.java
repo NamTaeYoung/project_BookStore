@@ -3,20 +3,14 @@ package com.lgy.project_book_store.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.lgy.project_book_store.dao.CartDAO;
 import com.lgy.project_book_store.dao.SearchDAO;
-import com.lgy.project_book_store.dto.CartDTO;
 import com.lgy.project_book_store.dto.SearchDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +26,7 @@ public class SearchController {
     @GetMapping("/Search")
     public String search(@RequestParam(value="q", required=false) String q,
                          @RequestParam(value="genre_id", required=false) Integer genre_id,
-                         Model model) {
+                         Model model) throws Exception{
         final String keyword = (q != null && !q.trim().isEmpty()) ? q.trim() : null;
         // 탭의 '전체'는 0으로 오므로 DB 필터에선 null로 변환
         final Integer genreFilter = (genre_id != null && genre_id == 0) ? null : genre_id;
@@ -54,6 +48,7 @@ public class SearchController {
         model.addAttribute("bookList", list);
         model.addAttribute("q", keyword == null ? "" : keyword);
         model.addAttribute("selectedGenreId", genre_id == null ? 0 : genre_id);
+        
         return "Book/Search";
     }
 
@@ -65,6 +60,4 @@ public class SearchController {
         model.addAttribute("book", book);
         return "Book/SearchDetail"; // 뷰리졸버 prefix/suffix와 합쳐짐
     }
-    
-
 }
