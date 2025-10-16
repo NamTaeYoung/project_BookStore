@@ -21,3 +21,4 @@ CREATE TABLE users (
 //user 테이블에 이부분 추가됨
 ALTER TABLE users ADD (login_type VARCHAR2(20) DEFAULT 'LOCAL');
 ALTER TABLE users ADD (social_id VARCHAR2(100));
+ALTER TABLE users ADD CONSTRAINT uk_user_email UNIQUE (user_email);
