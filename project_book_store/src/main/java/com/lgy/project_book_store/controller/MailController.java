@@ -1,16 +1,20 @@
 package com.lgy.project_book_store.controller;
 
 import java.util.HashMap;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lgy.project_book_store.dto.UserDTO;
 import com.lgy.project_book_store.service.MailService;
 
 @Controller
@@ -66,18 +70,52 @@ public class MailController {
         }
     }
     
-//    //비밀번호 찾기
-//    @PostMapping("/find_password")
-//    @ResponseBody
-//    public String sendUserPassword(@RequestParam HashMap<String, String> param){
-//    	String userInfo = mailService.findUserPassword(null, null)
-//    	
-//    	if (userInfo != null) {
-//    		mailService.sendCustomMail(id,email, "비밀번호 찾기 안내", 
-//    				"<h3>회원님의 비밀번호는 다음과 같습니다:</h3><h2>" + userInfo + "</h2>");
-//    		return "success";
-//    	} else {
-//    		return "fail";
-//    	}
-//    }
+    //비밀번호 찾기
+    @PostMapping("/find_password")
+    @ResponseBody
+    public String sendResetPassword(@RequestParam("id") String userId,
+                                    @RequestParam("email") String email,
+                                    HttpServletRequest request) {
+
+        // 아이디와 이메일이 실제로 매칭되는지 확인
+        boolean userExists = mailService.validateUserIdEmail(userId, email);
+        if (!userExists) return "fail";
+
+        // 토큰 생성 및 저장
+        String token = UUID.randomUUID().toString();
+        mailService.saveResetToken(userId, token);
+
+        // 비밀번호 재설정 링크 생성
+        String resetLink = request.getRequestURL().toString()
+                .replace("find_password", "reset_password?token=" + token);
+
+        // 메일 전송
+        mailService.sendCustomMail(email, "비밀번호 재설정 안내",
+                "<h3>아래 링크를 클릭해 비밀번호를 재설정하세요:</h3>"
+                + "<a href='" + resetLink + "'>" + resetLink + "</a>");
+
+        return "success";
+    }
+    // 비밀번호 재설정 페이지 띄우기
+    @GetMapping("/reset_password")
+    public String showResetPasswordPage(@RequestParam("token") String token, HttpServletRequest request) {
+        request.setAttribute("token", token);
+        return "resetPassword"; // /WEB-INF/views/resetPassword.jsp
+    }
+
+    // 비밀번호 실제 변경 처리
+    @PostMapping("/reset_password")
+    @ResponseBody
+    public String resetPassword(@RequestParam("token") String token,
+                                @RequestParam("newPw") String newPassword) {
+
+        // 토큰으로 사용자 찾기
+        UserDTO user = mailService.findUserByResetToken(token);
+        if (user == null) {
+            return "fail";
+        }
+
+        boolean updated = mailService.updatePasswordByToken(token, newPassword);
+        return updated ? "success" : "fail";
+    }
 }
