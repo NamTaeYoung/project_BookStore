@@ -253,16 +253,9 @@ public class ProjectController {
         return "MyPage/purchaseList";
     }
     
-    @GetMapping("/search")
-    public String search() {
-        // /WEB-INF/views/search/search.jsp 로 forward
-        return "search";
-    }
-    
     @GetMapping("/board")
     public String board() {
         // /WEB-INF/views/search/search.jsp 로 forward
         return "board";
     }
 }
-
