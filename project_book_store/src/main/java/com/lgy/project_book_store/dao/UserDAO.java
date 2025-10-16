@@ -31,6 +31,13 @@ public interface UserDAO {
     public UserDTO findUserByResetToken(String user_pwd_reset);
     //토큰으로 비밀번호 업데이트
     public int updatePasswordByToken(Map<String, String> param);
+	// 아이디로 회원 정보 조회(잠금 상태 확인, 세션용)
+    public UserDTO getUserById(String user_id);
+    //로그인 시도 횟수 체크
+    public void updateLoginFail(String user_id);
+    //로그인 실패 횟수 초기화
+    public void resetLoginFail(String user_id);
 }
+
 
 
