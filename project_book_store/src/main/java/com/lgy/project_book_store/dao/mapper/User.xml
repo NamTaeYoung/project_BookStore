@@ -14,11 +14,12 @@
         values(#{user_id},#{user_pw},#{user_email},#{user_phone_num},#{user_post_num},#{user_address},#{user_detail_address},#{user_name},#{user_nickname})
     </insert>
 	
-<!-- 	아이디가 있으면 1 -->
+<!-- 	아이디 중복 체크 -->
     <select id="checkId" parameterType="string" resultType="int">
         select count(*) from users where user_id = #{user_id}
     </select>
     
+<!--     이메일 중복 체크 -->
     <select id="checkEmail" parameterType="String" resultType="int">
     	select count(*) from users where user_email = #{user_email}
 	</select>
@@ -26,6 +27,26 @@
     <select id="findIdByEmail" parameterType="String" resultType="String">
         select user_id from users where user_email = #{user_email}
     </select>
+    
+<!--     아이디, 이메일로 비밀번호를 찾음 -->
+    <select id="findPwByIdEmail" parameterType="map" resultType="string">
+        select user_id from users where user_id = #{user_id} and user_email = #{user_email}
+    </select>
+    
+<!--     사용자의 아이디와 생성된 토큰을 받아, 데이터베이스 토큰을 저장(사용자가 재설정할 권한이 있음을 증명) -->
+ 	<update id="saveResetToken" parameterType="map">
+ 		update users set user_pwd_reset= #{user_pwd_reset} where user_id= #{user_id}
+ 	</update>
+ 	
+<!-- 	 토큰으로 사용자 조회 -->
+    <select id="findUserByResetToken" parameterType="string" resultType="com.lgy.project_book_store.dto.UserDTO">
+        select * from users where user_pwd_reset = #{user_pwd_reset}
+    </select>
+ 	
+<!--  	토큰으로 비밀번호 업데이트 -->
+ 	<update id="updatePasswordByToken" parameterType="hashmap">
+ 		update users set user_pw= #{user_pw},user_pwd_reset = NULL where user_pwd_reset= #{user_pwd_reset}
+ 	</update>
  
 
   <!-- 마이페이지: 단건 조회 -->
@@ -68,3 +89,4 @@
   
 
 </mapper>
+
