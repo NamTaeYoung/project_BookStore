@@ -112,12 +112,12 @@
       <!-- 비밀번호 찾기 -->
       <form id="passwordFindForm" class="modal-form" onsubmit="findPassword(event)" style="display: none;">
         <div class="field">
-          <label class="label" for="findId">아이디</label>
-          <input class="input" id="findId" name="id" type="text" placeholder="아이디를 입력하세요" required />
+          <label class="label" for="find_id">아이디</label>
+          <input class="input" id="find_id" name="user_id" type="text" placeholder="아이디를 입력하세요" required />
         </div>
         <div class="field">
-          <label class="label" for="findEmail">이메일</label>
-          <input class="input" id="findEmail" name="email" type="email" placeholder="이메일을 입력하세요" required />
+          <label class="label" for="find_pwd_email">이메일</label>
+          <input class="input" id="find_pwd_email" name="user_email" type="email" placeholder="이메일을 입력하세요" required />
         </div>
         <div class="modal-submit">
           <button type="submit" class="btn btn-primary">확인</button>
@@ -130,3 +130,4 @@
   <script src="<c:url value='/resources/js/login.js'/>"></script>
 </body>
 </html>
+
