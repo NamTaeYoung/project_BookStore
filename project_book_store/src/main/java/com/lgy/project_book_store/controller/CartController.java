@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lgy.project_book_store.dto.CartDTO;
@@ -18,28 +19,32 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping("/cartAdd")
-    public String addCart(@RequestParam("book_id") int book_id,
-                          @RequestParam(value="quantity", defaultValue="1") int quantity,
-                          HttpSession session,
-                          RedirectAttributes ra) {
+    @ResponseBody
+    public String addCart(
+            @RequestParam("book_id") int book_id,
+            HttpSession session) {
 
-        // 로그인 사용자 ID (없으면 임시)
-        String user_id = (String) session.getAttribute("LOGIN_USER_ID");
-        if (user_id == null || user_id.isEmpty()) {
-            user_id = "testuser"; // 개발용. 실제론 로그인 시 세션에 저장
-            session.setAttribute("LOGIN_USER_ID", user_id);
+        System.out.println("addCart() 호출됨! book_id = " + book_id);
+
+        // 세션에서 로그인한 유저 ID 가져오기
+        String user_id = (String) session.getAttribute("loginId"); // 수정!
+        if (user_id == null) {
+            return "로그인 후 이용해주세요.";
         }
 
-        CartDTO cart = new CartDTO();
-        cart.setUser_id(user_id);   // DTO가 String이면 그대로 사용
-        cart.setBook_id(book_id);
-        cart.setQuantity(quantity);
+        try {
+            CartDTO cart = new CartDTO();
+            cart.setBook_id(book_id);
+            cart.setQuantity(1);
+            cart.setUser_id(user_id);
 
-        cartService.addCart(cart);  // 실제 DB 저장
+            cartService.addCart(cart); // 서비스에서 DB insert + commit 처리
+            System.out.println("장바구니에 추가 완료! user_id = " + user_id);
 
-        // 상세 페이지로 되돌아가면서 팝업 트리거
-        ra.addAttribute("book_id", book_id);
-        ra.addAttribute("added", "1");
-        return "redirect:/SearchDetail";
+            return "success";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "장바구니 담기 실패: " + e.getMessage();
+        }
     }
 }
