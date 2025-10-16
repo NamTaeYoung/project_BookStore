@@ -78,7 +78,7 @@
 	</select>
 
 	<!-- 검색어 + 장르 필터 -->
-	<select id="searchBooksByTitleAndGenre"
+	<select id="searchBooksByTitleAndGenre" parameterType="map"
 		resultType="com.lgy.project_book_store.dto.SearchDTO">
 		SELECT
 		b.book_id,
@@ -94,20 +94,18 @@
 		b.book_isbn,
 		b.book_image_path
 		FROM Book b
-		LEFT JOIN Genre g ON
-		b.genre_id = g.genre_id
+		LEFT JOIN Genre g ON b.genre_id = g.genre_id
 		WHERE 1=1
-		<if test="q != null and q != ''">
-			AND (LOWER(b.book_title) LIKE '%' || LOWER(#{q}) || '%'
+		<if test="keyword != null and keyword != ''">
+			AND (LOWER(b.book_title) LIKE '%' || LOWER(#{keyword}) || '%'
 			OR
-			LOWER(b.book_writer) LIKE '%' || LOWER(#{q}) || '%')
+			LOWER(b.book_writer) LIKE '%' || LOWER(#{keyword}) || '%')
 		</if>
-		<if test="genre_id != null">
-			AND b.genre_id = #{genre_id}
+		<if test="genreFilter != null">
+			AND b.genre_id = #{genreFilter}
 		</if>
 		ORDER BY b.book_id ASC
 	</select>
-
 
 
 	<!-- 장르 목록 조회 -->
