@@ -1,228 +1,225 @@
-<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<title>도서 목록/검색</title>
-<style>
-body {
-   font-family: Arial, sans-serif;
-   padding: 24px;
-}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BRAND – 책 찾아보기</title>
 
-form {
-   margin-bottom: 16px;
-   display: flex;
-   gap: 8px;
-   align-items: center;
-}
+<!-- (선택) JS에서 컨텍스트 경로가 필요하면 사용 -->
+<meta name="ctx" content="${pageContext.request.contextPath}" />
 
-input[type=text] {
-   width: 280px;
-   padding: 8px;
-}
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap"
+	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+	rel="stylesheet">
 
-button {
-   padding: 8px 12px;
-   cursor: pointer;
-}
-
-/* 탭 스타일 */
-.tabs {
-   display: flex;
-   gap: 10px;
-   flex-wrap: wrap;
-   margin: 8px 0 16px;
-   padding-bottom: 8px;
-   border-bottom: 1px solid #e5e5e5
-}
-
-.tab {
-   padding: 6px 14px;
-   border: 1px solid #ddd;
-   border-radius: 9999px;
-   text-decoration: none;
-   color: #333;
-   background: #fff;
-   font-weight: 600;
-   transition: .2s
-}
-
-.tab:hover {
-   background: #f6f6f6
-}
-
-.tab.active {
-   background: #333;
-   color: #fff;
-   border-color: #333
-}
-
-.book-card {
-   border: 1px solid #ccc;
-   padding: 10px;
-   margin-bottom: 15px;
-   display: flex;
-   gap: 15px;
-}
-
-.book-info {
-   flex-grow: 1;
-}
-
-.book-image img {
-   width: 150px;
-   height: auto;
-   object-fit: contain;
-}
-
-.book-info h3 a {
-   text-decoration: none;
-   color: inherit;
-}
-
-.book-info h3 a:hover {
-   text-decoration: underline;
-   color: #333;
-}
-
-.hint {
-   color: #666;
-   margin: 8px 0 16px
-}
-</style>
+<!-- External CSS -->
+<link rel="stylesheet" href="<c:url value='/resources/css/search.css'/>">
 </head>
 <body>
-   <h2>도서 목록</h2>
 
-   <%-- 현재 선택된 장르 --%>
-   <c:set var="selId"
-      value="${empty selectedGenreId ? (empty param.genre_id ? 0 : param.genre_id) : selectedGenreId}" />
-   <c:set var="trimQ" value="${empty q ? '' : fn:trim(q)}" />
+	<!-- Header -->
+	<header>
+		<nav class="nav" aria-label="주요 메뉴">
+			<a href="<c:url value='/'/>" class="brand"> <img
+				src="<c:url value='/resources/img/book_logo.png'/>" alt="책갈피 로고"
+				class="brand-logo" /> <span class="brand-text" aria-hidden="true"></span>
+			</a>
 
-   <%-- 폼 action도 c:url로 --%>
-   <c:url var="searchAction" value="/Search" />
-   <form method="get" action="${searchAction}">
-      <input type="text" name="q" value="${fn:escapeXml(trimQ)}"
-         placeholder="제목 또는 저자로 검색" /> <input type="hidden" name="genre_id"
-         value="${selId}" />
-      <button type="submit">검색</button>
-   </form>
+			<!-- 로그인 전/후 분기 -->
+			<div class="nav-right">
+				<c:choose>
+					<%-- 로그인 전 --%>
+					<c:when test="${empty sessionScope.loginId}">
+						<a href="<c:url value='/login'/>">로그인</a>
+						<a href="<c:url value='/register'/>">회원가입</a>
+						<a href="<c:url value='/cart'/>">장바구니</a>
+					</c:when>
 
-   <div class="tabs">
-      <%-- 전체 탭 --%>
-      <c:url var="allUrl" value="/Search">
-         <c:param name="q" value="${trimQ}" />
-         <c:param name="genre_id" value="0" />
-      </c:url>
-      <!-- ❌ ${pageContext.request.contextPath} 붙이지 말기 -->
-      <a href="${allUrl}" class="tab ${selId == 0 ? 'active' : ''}">전체</a>
-
-      <%-- 장르 탭 --%>
-      <c:forEach var="genre" items="${genreList}">
-         <c:url var="gUrl" value="/Search">
-            <c:param name="q" value="${trimQ}" />
-            <c:param name="genre_id" value="${genre.genre_id}" />
-         </c:url>
-         <!-- ❌ 여기에도 contextPath 다시 붙이면 안 됨 -->
-         <a href="${gUrl}"
-            class="tab ${selId == genre.genre_id ? 'active' : ''}">
-            ${genre.genre_name} </a>
-      </c:forEach>
-   </div>
+					<%-- 로그인 후 --%>
+					<c:otherwise>
+						<a href="<c:url value='/mypage'/>">마이페이지</a>
+						<a href="<c:url value='/cart'/>">장바구니</a>
+						<a href="<c:url value='/logout'/>">로그아웃</a>
+						<span style="color: #666; font-weight: 700;">
+							${sessionScope.loginId}님 </span>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</nav>
+	</header>
 
 
+	<!-- Sub Header -->
+	<!-- 	<section class="subhead"> -->
+	<!-- 		<div class="subwrap"> -->
+	<!-- 			<div> -->
+	<!-- 				<h1 class="title">책 찾아보기</h1> -->
+	<!-- 				<div class="meta"> -->
+	<!-- 					<span id="countText">총 0권</span> · 카테고리/정렬로 골라보세요 -->
+	<!-- 				</div> -->
+	<!-- 			</div> -->
+	<!-- 			<div class="controls"> -->
+	<!-- 				<form id="searchForm" class="list-search" role="search" -->
+	<!-- 					aria-label="도서 검색"> -->
+	<!-- 					<div class="search-box"> -->
+	<!-- 						<input id="q" class="search-input" type="search" -->
+	<!-- 							placeholder="도서명, 저자명으로 검색하세요..." autocomplete="off" /> -->
+	<!-- 						<button class="search-button" id="searchBtn" aria-label="검색" -->
+	<!-- 							type="submit"> -->
+	<!-- 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" -->
+	<!-- 								stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> -->
+	<%--                 <circle cx="11" cy="11" r="7"></circle> --%>
+	<!--                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line> -->
+	<!--               </svg> -->
+	<!-- 						</button> -->
+	<!-- 					</div> -->
+	<!-- 				</form> -->
+	<!-- 			</div> -->
+	<!-- 		</div> -->
+	<!-- 	</section> -->
 
-   <c:choose>
-      <%-- 검색 전 초기 화면: 안내 멘트만 표시 --%>
-      <c:when test="${showInitial}">
-         <p class="hint">검색어를 입력하거나 위의 장르 탭을 선택해 보세요.</p>
-      </c:when>
+	<!-- 내꺼 Sub Header -->
+	<section class="subhead">
+		<div class="subwrap">
+			<div>
+				<h1 class="title">책 찾아보기</h1>
+				<div class="meta">
+					<span id="countText">총 ${fn:length(bookList)}권</span> · 카테고리/정렬로
+					골라보세요
+				</div>
+			</div>
+			<div class="controls">
+				<c:set var="trimQ" value="${empty q ? '' : fn:trim(q)}" />
+				<form id="searchForm" class="list-search" role="search" method="get"
+					action="<c:url value='/Search'/>">
+					<div class="search-box">
+						<input id="q" class="search-input" type="search" name="q"
+							value="${fn:escapeXml(trimQ)}" placeholder="도서명, 저자명으로 검색하세요..."
+							autocomplete="off" />
+						<button class="search-button" type="submit" aria-label="검색">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+								stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="11" cy="11" r="7"></circle>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+						</svg>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
 
-      <%-- 결과 없음 --%>
-      <c:when test="${empty bookList}">
-         <p>표시할 도서가 없습니다.</p>
-      </c:when>
 
-      <%-- 결과 목록 --%>
-      <c:otherwise>
-         <c:forEach var="book" items="${bookList}">
-            <div class="book-card">
-               <div class="book-image">
-                  <c:choose>
-                     <c:when test="${not empty book.book_image_path}">
-                        <img src="${book.book_image_path}" alt="책 사진" />
-                     </c:when>
-                     <c:otherwise>
-                        <img src="https://via.placeholder.com/150?text=No+Image"
-                           alt="기본 이미지" />
-                     </c:otherwise>
-                  </c:choose>
-               </div>
+	<!-- Categories -->
+	<!-- 	<div class="cats" role="navigation" aria-label="카테고리"> -->
+	<!-- 		<div class="cats-inner"> -->
+	<!-- 			<div class="cat-left"> -->
+	<!-- 				<button class="cat-btn active" data-cat="all">전체</button> -->
+	<!-- 				<button class="cat-btn" data-cat="novel">소설</button> -->
+	<!-- 				<button class="cat-btn" data-cat="essay">에세이</button> -->
+	<!-- 				<button class="cat-btn" data-cat="humanity">인문/사회</button> -->
+	<!-- 				<button class="cat-btn" data-cat="science">과학/기술</button> -->
+	<!-- 				<button class="cat-btn" data-cat="economy">경제/경영</button> -->
+	<!-- 			</div> -->
+	<!-- 		</div> -->
+	<!-- 	</div> -->
 
-               <div class="book-info">
-                  <c:url var="detailUrl" value="/SearchDetail">
-                     <c:param name="book_id" value="${book.book_id}" />
-                  </c:url>
+	<!-- 내꺼 Categories -->
+	<div class="cats" role="navigation" aria-label="카테고리">
+		<div class="cats-inner">
+			<div class="cat-left">
+				<c:set var="selId"
+					value="${empty selectedGenreId ? (empty param.genre_id ? 0 : param.genre_id) : selectedGenreId}" />
+				<c:set var="trimQ" value="${empty q ? '' : fn:trim(q)}" />
 
-                  <h3>
-                     <a href="${detailUrl}"> ${book.book_title} </a>
-                  </h3>
-                  <p>
-                     <strong>저자:</strong> ${book.book_writer}
-                  </p>
-                  <p>
-                     <strong>출판사:</strong> ${book.book_pub}
-                  </p>
-                  <p>
-                     <strong>출판일:</strong>
-                     <c:choose>
-                        <c:when test="${not empty book.book_date}">
-                           <fmt:formatDate value="${book.book_date}" pattern="yyyy-MM-dd" />
-                        </c:when>
-                        <c:otherwise>날짜 정보 없음</c:otherwise>
-                     </c:choose>
-                  </p>
-                  <p>
-                     <strong>장르:</strong> ${book.genre_name}
-                  </p>
-                  <p>
-                     <strong>가격:</strong> ${book.book_price} 원
-                  </p>
+				<form method="get" action="<c:url value='/Search'/>"
+					style="display: inline">
+					<input type="hidden" name="q" value="${fn:escapeXml(trimQ)}" /> <input
+						type="hidden" name="genre_id" value="0" />
+					<button type="submit" class="cat-btn ${selId == 0 ? 'active' : ''}">전체</button>
+				</form>
 
-                  <form method="post"
-                     action="${pageContext.request.contextPath}/cartAdd"
-                     onsubmit="return addCartAlert(this);">
-                     <input type="hidden" name="book_id" value="${book.book_id}" />
-                     <button type="submit">장바구니</button>
-                  </form>
+				<c:forEach var="genre" items="${genreList}">
+					<form method="get" action="<c:url value='/Search'/>"
+						style="display: inline">
+						<input type="hidden" name="q" value="${fn:escapeXml(trimQ)}" /> <input
+							type="hidden" name="genre_id" value="${genre.genre_id}" />
+						<button type="submit"
+							class="cat-btn ${selId == genre.genre_id ? 'active' : ''}">
+							${genre.genre_name}</button>
+					</form>
+				</c:forEach>
+			</div>
+		</div>
+	</div>
 
-                  <script>
-                     function addCartAlert(form) {
-                        alert('장바구니에 담겼습니다!');
+	<!-- List -->
+	<!-- 	<main class="section"> -->
+	<!-- 		<div class="container"> -->
+	<!-- 			<h2 class="section-title">전체 도서</h2> -->
 
-                        // AJAX 요청
-                        const xhr = new XMLHttpRequest();
-                        xhr.open(form.method, form.action, true);
-                        xhr.setRequestHeader('Content-Type',
-                              'application/x-www-form-urlencoded');
+	<!-- 			<div id="grid" class="grid"></div> -->
+	<!-- 			<div id="grid2" class="grid hidden" style="margin-top: 24px;"></div> -->
 
-                        // form 데이터 읽어서 전송
-                        const formData = new FormData(form);
-                        const params = new URLSearchParams(formData)
-                              .toString();
-                        xhr.send(params);
+	<!-- 			<div class="pager" id="pager" style="display: none;"> -->
+	<!-- 				<button class="page-btn active" data-page="1">1</button> -->
+	<!-- 				<button class="page-btn" data-page="2">2</button> -->
+	<!-- 			</div> -->
+	<!-- 		</div> -->
+	<!-- 	</main> -->
 
-                        return false; // 폼 실제 제출 막기
-                     }
-                  </script>
+	<!-- 내꺼 List -->
+	<main class="section">
+		<div class="container">
+<!-- 			<h2 class="section-title">전체 도서</h2> -->
 
-               </div>
-            </div>
-         </c:forEach>
-      </c:otherwise>
-   </c:choose>
+			<div id="grid" class="grid"></div>
+			<div id="grid2" class="grid hidden" style="margin-top: 24px;"></div>
+
+			<div class="pager" id="pager" style="display: none;">
+				<button class="page-btn active" data-page="1">1</button>
+				<button class="page-btn" data-page="2">2</button>
+			</div>
+		</div>
+	</main>
+
+	<!-- Footer -->
+	<footer style="background: #000; color: #fff; padding: 40px 0">
+		<div class="nav"
+			style="max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center">
+			<div style="font-weight: 800; color: var(- -brand)">BRAND</div>
+			<div style="opacity: .8; font-size: 14px">© BRAND BookStore</div>
+		</div>
+	</footer>
+
+	<!-- 서버 데이터 → JS 배열 -->
+	<script>
+		const books = [
+		<c:forEach var="b" items="${bookList}" varStatus="status">
+		{
+		    id: ${b.book_id},
+		    title: "${fn:escapeXml(b.book_title)}",
+		    author: "${fn:escapeXml(b.book_writer)}",
+		    price: ${b.book_price},
+		    cat: "${fn:escapeXml(b.genre_id)}", <!-- 여기 genre_name이 아니라 genre_id 사용 -->
+		    <c:if test="${not empty b.book_image_path}">image: "${fn:escapeXml(b.book_image_path)}",</c:if>
+		    <c:if test="${not empty b.book_comm}">tag: "${fn:escapeXml(b.book_comm)}"</c:if>
+		}<c:if test="${!status.last}">,</c:if>
+		</c:forEach>
+		];
+	</script>
+
+	<!-- External JS -->
+	<script defer src="<c:url value='/resources/js/search.js'/>"></script>
 </body>
 </html>
