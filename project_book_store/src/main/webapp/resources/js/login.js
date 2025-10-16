@@ -84,12 +84,30 @@ function findId(event) {
 }
 function findPassword(event) {
   event.preventDefault();
-  const id = document.getElementById('findId').value;
-  const email = document.getElementById('findEmail').value;
+  const id = document.getElementById('find_id').value;
+  const email = document.getElementById('find_pwd_email').value;
   if (!id || !email) {
     alert('아이디와 이메일을 모두 입력해주세요.');
     return;
   }
-  alert('비밀번호를 이메일로 발송되었습니다.\n입력된 정보: 아이디(' + id + '), 이메일(' + email + ')');
-  closeModal('accountFindModal');
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailPattern.test(email)) {
+    alert('이메일 양식을 다시 확인해주세요.');
+    return;
+  }
+  fetch("mail/find_password?id=" + id + "&email=" + email, { method: "POST" })
+	  .then(response => response.text())
+	  .then(result => {
+	    if (result === "success") {
+	      alert("입력하신 이메일로 비밀번호 재설정 링크가 전송되었습니다.");
+	    } else if (result === "fail") {
+	      alert("입력하신 정보와 일치하는 계정을 찾을 수 없습니다.");
+	    } else {
+	      alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+	    }
+	  })
+	  .catch(error => {
+        console.error('Error:', error);
+        alert("오류가 발생했습니다.");
+        });
 }
