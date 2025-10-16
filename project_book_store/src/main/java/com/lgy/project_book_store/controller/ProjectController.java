@@ -69,14 +69,51 @@ public class ProjectController {
 	    @RequestMapping(value="/login_yn", method=RequestMethod.POST)
 	    public String loginYn(@RequestParam Map<String, String> param, HttpSession session, Model model) {
 	        String userId = param.get("user_id");
-	        boolean ok = userService.loginYn(param);
+	        
+	        // 회원 정보 조회 (로그인 시도 및 시간 확인용)
+	        UserDTO user = userService.getUserById(userId);
 
+	        if (user == null) {
+	            model.addAttribute("login_err", "존재하지 않는 아이디입니다.");
+	            return "login";
+	        }
+	        // 로그인 실패 기록 초기화 조건 확인 (마지막 실패 후 5분 경과 시 자동 초기화)
+	        if (user.getLast_fail_time() != null) {
+	            long diffMin = (System.currentTimeMillis() - user.getLast_fail_time().getTime()) / 1000 / 60;
+	            if (diffMin >= 5 && user.getLogin_fail_count() > 0) {
+	                userService.resetLoginFail(userId);
+	            }
+	        }
+
+	        // 로그인 잠금 상태 체크
+	        if (user.getLogin_fail_count() >= 5 && user.getLast_fail_time() != null) {
+	            long diffSec = (System.currentTimeMillis() - user.getLast_fail_time().getTime()) / 1000;
+	            if (diffSec < 30) {
+	                model.addAttribute("login_err", "비밀번호 5회 이상 틀려 30초간 계정이 비활성화 됩니다.<br>잠시 후 다시 시도해주세요.");
+	                return "login";
+	            } else {
+	                userService.resetLoginFail(userId); // 30초 지났으면 초기화
+	            }
+	        }
+	        
+	        boolean ok = userService.loginYn(param);
+	        
 	        if (ok) {
+	           // 로그인 성공 시 시도횟수 초기화
+	           userService.resetLoginFail(userId);
 	           session.setAttribute("loginId", userId);
 	            // 로그인 성공 후 main.jsp로 리다이렉트
 	            return "redirect:/";
 	        } else {
-	            model.addAttribute("login_err", "아이디 또는 비밀번호가 잘못되었습니다.");
+	        	userService.updateLoginFail(userId); // 실패 카운트 증가
+	            user = userService.getUserById(userId); // 갱신된 횟수 다시 조회
+
+	            if (user.getLogin_fail_count() >= 5) {
+	                model.addAttribute("login_err", "비밀번호를 5회 이상 틀리셨습니다.<br>계정이 30초간 비활성화 됩니다.");
+	            } else {
+	                model.addAttribute("login_err",
+	                    "아이디 또는 비밀번호가 잘못되었습니다. (" + user.getLogin_fail_count() + "/5)");
+	            }
 	            return "login";
 	        }
 	    }
@@ -228,3 +265,4 @@ public class ProjectController {
         return "board";
     }
 }
+
