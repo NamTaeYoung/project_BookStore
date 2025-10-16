@@ -56,4 +56,25 @@ public class UserServicelmpl implements UserService {
         return sqlSession.selectOne("com.lgy.project_book_store.dao.UserDAO.checkId", id);
     }
 
+    //아이디로 회원 조회
+    @Override
+    public UserDTO getUserById(String user_id) {
+    	return sqlSession.selectOne(
+    			"com.lgy.project_book_store.dao.UserDAO.getUserById", user_id);
+    }
+    
+    //로그인 시도 횟수 체크
+	@Override
+	public void updateLoginFail(String user_id) {
+		sqlSession.update(
+				"com.lgy.project_book_store.dao.UserDAO.updateLoginFail", user_id);
+	}
+	
+	//로그인 시도횟수 초기화 
+	@Override
+	public void resetLoginFail(String user_id) {
+		sqlSession.update(
+				"com.lgy.project_book_store.dao.UserDAO.resetLoginFail", user_id);
+	}
 }
+
