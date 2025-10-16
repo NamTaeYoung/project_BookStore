@@ -39,14 +39,19 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
 
 /* Sub header */
 .subhead{
-  background: linear-gradient(135deg, #665c54 0%, #8b4f2f 100%);
-  color:#fff; padding:34px 20px;
+  background: linear-gradient(135deg, #665c54 0%, #8b4f2f 100%); /* 색 통일 */
+  color:#fff;
+  padding: 40px 20px;             /* 세로 크기(높이) 통일: 필요시 34→40으로 */
+  min-height: 140px;              /* 고정 최소 높이(선택) */
+  display:flex;                   /* 내용 수직 가운데 */
+  align-items:center;
 }
 .subwrap{
-  max-width:1100px; margin:0 auto;
-  display:grid; grid-template-columns:1fr auto; gap:20px; align-items:end;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;}
 }
-.title{ margin:0; font-size:clamp(22px, 3.2vw, 30px); font-weight:800 }
+.title{ margin:0; font-size:clamp(24px, 3.2vw, 32px); font-weight:800 }
 .meta{ opacity:.9; margin-top:6px; font-size:15px }
 .controls{ display:flex; gap:10px; align-items:center }
 
@@ -57,7 +62,7 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
   width:100%;
   padding:14px 54px 14px 16px;
   font-size:15px;
-  border:none; border-radius:50px; outline:none; transition:all .3s ease;
+  border:none; border-radius:70px; outline:none; transition:all .3s ease;
   background:rgba(255,255,255,.95);
   box-shadow:0 8px 32px rgba(0,0,0,.2);
   backdrop-filter:blur(10px);
@@ -103,14 +108,74 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
 .card:hover{ transform:translateY(-5px); box-shadow:0 15px 40px rgba(0,0,0,.12) }
 .thumb{
   height:200px; background:linear-gradient(135deg,#f5f5f5,#e8e8e8);
-  display:flex; align-items:center; justify-content:center; position:relative
+  display:flex; align-items:center; justify-content:center; position:relative;
+  overflow: hidden;
 }
 .thumb::before{ content:"📚"; font-size:48px; opacity:.35 }
+
+/* 이미지 스타일 추가 */
+.thumb img {
+  width: auto;      /* 원하는 가로 크기 */
+  height: 100%;     /* 원하는 세로 크기 */
+  object-fit: cover;  /* 비율 유지하며 잘림 방지 */
+  display: block;
+  position: absolute; /* thumb 위에 표시 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 중앙 정렬 */
+  z-index: 1;
+  border-radius: 0;
+}
+
 .badge{
   position:absolute; left:12px; top:12px; background:#000; color:#fff; font-size:12px;
-  padding:4px 8px; border-radius:8px; opacity:.8
+  padding:4px 8px; border-radius:8px; opacity:.8; z-index: 2; /* 이미지 위 */
 }
-.info{ padding:18px; display:flex; flex-direction:column; gap:8px }
+.info {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+  min-height: 150px; /* 카드 내용 높이 확보 (필요 시 조정) */
+}
+
+/* 가격과 장바구니 버튼 정렬 */
+.info-bottom {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;  /* 가격 왼쪽, 버튼 오른쪽 */
+}
+
+/* 장바구니 버튼 디자인 */
+.cart-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* 아이콘 크기 */
+.cart-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #fff;
+}
+
+/* hover 효과 */
+.cart-btn:hover {
+  background: var(--brand-dark);
+  transform: translateY(-2px);
+}
 .title-sm{ margin:0; font-size:18px; font-weight:700 }
 .author{ margin:0; font-size:14px; color:var(--muted) }
 .price{ margin:2px 0 0; font-size:16px; font-weight:800; color:var(--brand) }
