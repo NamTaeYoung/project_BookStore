@@ -63,9 +63,12 @@ header{
 .nav-right a:hover{ color:var(--brand-dark) }
 
 .boardhead {
-  background: linear-gradient(135deg, #665c54 0%, #8b4f2f 100%);
-  color: #fff;
-  padding: 34px 20px;
+  background: linear-gradient(135deg, #665c54 0%, #8b4f2f 100%); /* 색 통일 */
+  color:#fff;
+  padding: 40px 20px;             /* 세로 크기(높이) 통일: 필요시 34→40으로 */
+  min-height: 140px;              /* 고정 최소 높이(선택) */
+  display:flex;                   /* 내용 수직 가운데 */
+  align-items:center;
 }
 .boardsubwrap {
   max-width: 1100px;
