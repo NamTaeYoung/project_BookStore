@@ -1,11 +1,14 @@
 package com.lgy.project_book_store.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +23,7 @@ import com.lgy.project_book_store.dao.BookBuyDAO;
 import com.lgy.project_book_store.dao.CartDAO;
 import com.lgy.project_book_store.dto.BookBuyDTO;
 import com.lgy.project_book_store.dto.CartDTO;
+import com.lgy.project_book_store.dto.UserDTO;
 import com.lgy.project_book_store.service.UserServicelmpl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -211,6 +215,7 @@ public class ProjectController {
 
         return "MyPage/purchaseList";
     }
+    
     @GetMapping("/search")
     public String search() {
         // /WEB-INF/views/search/search.jsp 로 forward
@@ -223,8 +228,3 @@ public class ProjectController {
         return "board";
     }
 }
-
-
-
-
-
