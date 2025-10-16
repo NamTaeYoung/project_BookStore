@@ -13,11 +13,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- 외부 CSS -->
+  <!-- 분리된 CSS -->
   <link rel="stylesheet" href="<c:url value='/resources/css/board.css'/>">
 </head>
 <body>
-
   <!-- 헤더 & 네비 -->
 <header>
   <nav class="nav" aria-label="주요 메뉴">
@@ -50,14 +49,16 @@
   </nav>
 </header>
 
-  <!--  메인 콘텐츠 -->
-  <main class="main-content">
-    <div class="page-header">
-      <h1 class="page-title">게시판</h1>
-      <p class="page-subtitle">도서관 관련 소식과 정보를 공유하는 공간입니다</p>
-    </div> 
-   
+  <!-- 서브헤드(검색 페이지와 동일 스타일) -->
+  <section class="boardhead">
+    <div class="boardsubwrap">
+      <h1>게시판</h1>
+      <p>도서관 관련 소식과 정보를 공유하는 공간입니다</p>
+    </div>
+  </section>
 
+  <!-- 메인 콘텐츠 -->
+  <main class="main-content">
     <!-- 게시판 컨트롤 -->
     <div class="board-controls">
       <div class="search-box">
@@ -77,11 +78,11 @@
         <div class="table-cell">작성일</div>
         <div class="table-cell">조회</div>
       </div>
-      <!-- 게시글 목록은 JS가 .table-row 를 추가 -->
+      <!-- 목록은 JS로 동적 생성 -->
     </div>
 
     <!-- 페이지네이션 -->
-    <div class="pagination">
+    <div class="pagination" role="navigation" aria-label="게시판 페이지네이션">
       <button disabled>이전</button>
       <button class="active">1</button>
       <button>2</button>
@@ -92,7 +93,7 @@
     </div>
   </main>
 
-  <!-- 외부 JS -->
-  <script src="<c:url value='/resources/js/board.js'/>"></script>
+  <!-- 분리된 JS -->
+  <script src="<c:url value='/resources/js/board.js'/>" defer></script>
 </body>
 </html>
