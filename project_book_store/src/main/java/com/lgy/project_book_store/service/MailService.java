@@ -1,6 +1,7 @@
 package com.lgy.project_book_store.service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -76,12 +77,40 @@ public class MailService {
         return dao.findIdByEmail(email);
     }
     
-//    // 비밀번호 찾기용: 이메일로 user_id 조회 
-//    public String findUserPassword(String id, String email) {
-//    	UserDAO dao = sqlSession.getMapper(UserDAO.class);
-//    	return dao.findIdByPassword(id, email);
-//    }
+ // 아이디 + 이메일 검증
+    public boolean validateUserIdEmail(String userId, String email) {
+        UserDAO dao = (UserDAO) sqlSession.getMapper(UserDAO.class);
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("user_id", userId);
+        param.put("user_email", email);
 
+        String result = dao.findPwByIdEmail(param);
+        return result != null;
+    }
+
+    // 비밀번호 재설정 토큰 저장
+    public void saveResetToken(String userId, String token) {
+        UserDAO dao = (UserDAO) sqlSession.getMapper(UserDAO.class);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", userId);
+        map.put("user_pwd_reset", token);
+        dao.saveResetToken(map);
+    }
+    // 토큰으로 사용자 조회
+    public UserDTO findUserByResetToken(String token) {
+        UserDAO dao = sqlSession.getMapper(UserDAO.class);
+        return dao.findUserByResetToken(token);
+    }
+
+    // 토큰으로 비밀번호 변경
+    public boolean updatePasswordByToken(String token, String newPassword) {
+        UserDAO dao = sqlSession.getMapper(UserDAO.class);
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("user_pwd_reset", token);
+        param.put("user_pw", newPassword);
+        int result = dao.updatePasswordByToken(param);
+        return result > 0;
+    }
     // 일반 사용자 지정 메일 보내기
     public void sendCustomMail(String recipient, String subject, String htmlContent) {
         try {
@@ -96,18 +125,4 @@ public class MailService {
         }
     }
     
-//    // 일반 사용자 지정 메일 보내기(비밀번호 찾기)
-//    public void sendCustomMailPw(String recipient, String subject, String htmlContent) {
-//    	try {
-//    		MimeMessage message = mailSender.createMimeMessage();
-//    		message.setFrom(senderEmail);
-//    		message.setRecipients(MimeMessage.RecipientType.TO, recipient);
-//    		message.setSubject(subject);
-//    		message.setText(htmlContent, "UTF-8", "html");
-//    		mailSender.send(message);
-//    	} catch (MessagingException e) {
-//    		e.printStackTrace();
-//    	}
-//    }
-
 }
