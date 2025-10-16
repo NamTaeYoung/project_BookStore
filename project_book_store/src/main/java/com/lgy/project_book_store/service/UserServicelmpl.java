@@ -7,6 +7,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lgy.project_book_store.dto.UserDTO;
+
 @Service
 public class UserServicelmpl implements UserService {
 
@@ -77,4 +79,5 @@ public class UserServicelmpl implements UserService {
 				"com.lgy.project_book_store.dao.UserDAO.resetLoginFail", user_id);
 	}
 }
+
 
