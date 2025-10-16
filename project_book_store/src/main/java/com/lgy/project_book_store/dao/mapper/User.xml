@@ -48,7 +48,29 @@
  		update users set user_pw= #{user_pw},user_pwd_reset = NULL where user_pwd_reset= #{user_pwd_reset}
  	</update>
  
+   <!-- 아이디로 회원 정보 조회 (잠금상태, 세션용) -->
+    <select id="getUserById" parameterType="string" resultType="com.lgy.project_book_store.dto.UserDTO">
+        SELECT *
+        FROM users
+        WHERE user_id = #{user_id}
+    </select>
+ 	
+	<!-- 로그인 실패 시 시도 횟수 +1, 시간 갱신 -->
+    <update id="updateLoginFail">
+        UPDATE users
+        SET login_fail_count = login_fail_count + 1,
+            last_fail_time = SYSDATE
+        WHERE user_id = #{user_id}
+    </update>
 
+    <!-- 로그인 성공 시 초기화 -->
+    <update id="resetLoginFail">
+        UPDATE users
+        SET login_fail_count = 0,
+            last_fail_time = NULL
+        WHERE user_id = #{user_id}
+    </update>
+	
   <!-- 마이페이지: 단건 조회 -->
   <select id="selectUser" parameterType="hashmap" resultType="hashmap">
   SELECT
@@ -89,4 +111,5 @@
   
 
 </mapper>
+
 
