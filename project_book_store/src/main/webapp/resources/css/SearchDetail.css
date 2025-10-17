@@ -254,17 +254,11 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
   margin-top:6px;
   font-size:15px;
 }
-/* .detailhead .breadcrumb{ */
-/*   margin:8px 0 0; */
-/*   color:#fff; */
-/*   opacity:1; */
-/* } */
 .detailhead .breadcrumb a{
   color:#fff;
   text-decoration:underline;
 }
 
-/* 새 breadcrumb 위치 */
 .breadcrumb.inside-detail {
   margin: 0 0 16px 0;
   font-size: 14px;
@@ -280,20 +274,17 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
   text-decoration: underline;
 }
 
-/* 카드 내부 상단 줄로 쓰는 breadcrumb */
 .breadcrumb.in-card{
-  margin: 0;             /* 바깥여백 제거 */
-  padding: 16px 40px 0;  /* 좌우 40px = 카드 내부 패딩과 정렬, 위는 16px만 */
+  margin: 0;            
+  padding: 16px 40px 0;  
   font-size: 14px;
   color: var(--muted);
 }
 .breadcrumb.in-card a{ color:var(--brand); text-decoration:none; }
 .breadcrumb.in-card a:hover{ text-decoration:underline; }
 
-/* 빵꾸러미 바로 아래 내용이 너무 벌어지지 않도록 윗패딩만 줄임 */
-.product-detail .product-main{ padding-top:24px; } /* 기본 40px → 24px */
+.product-detail .product-main{ padding-top:24px; } 
 
-/* 모바일일 때 카드 내부 패딩이 20px 느낌으로 줄어들게 */
 @media (max-width:768px){
   .breadcrumb.in-card{ padding: 12px 20px 0; }
   .product-detail .product-main{ padding: 20px; padding-top: 20px; }
