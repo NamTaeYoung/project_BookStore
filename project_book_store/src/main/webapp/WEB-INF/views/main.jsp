@@ -34,30 +34,24 @@
 			<div class="nav-right">
 				<c:choose>
 					<%-- 로그인 전 --%>
-					<c:when test="${empty sessionScope.loginId}">
+					<c:when test="${empty sessionScope.loginDisplayName}">
 						<a href="<c:url value='/login'/>">로그인</a>
 						<a href="<c:url value='/register'/>">회원가입</a>
 						<a href="<c:url value='/cart'/>">장바구니</a>
 					</c:when>
 
-			        <%-- 로그인 후 --%>
-			        <c:otherwise>
-			          <a href="<c:url value='/mypage'/>">마이페이지</a>
-			          <a href="<c:url value='/cart'/>">장바구니</a>
-			          <a href="<c:url value='/logout'/>">로그아웃</a>
-			          <span style="color:#666; font-weight:700;">
-			            <c:choose>
-			              <c:when test="${not empty sessionScope.loginDisplayName}">
-			                ${sessionScope.loginDisplayName}님
-			              </c:when>
-			              <c:otherwise>회원님</c:otherwise>
-			            </c:choose>
-			          </span>
-			        </c:otherwise>
-			      </c:choose>
-			    </div>
-			  </nav>
-			</header>
+					<%-- 로그인 후 --%>
+					<c:otherwise>
+						<a href="<c:url value='/mypage'/>">마이페이지</a>
+						<a href="<c:url value='/cart'/>">장바구니</a>
+						<a href="<c:url value='/logout'/>">로그아웃</a>
+						<span style="color: #666; font-weight: 700;">
+							${sessionScope.loginDisplayName}님 </span>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</nav>
+	</header>
 
 	<!-- 상단 프로모션 -->
 	<div class="promo" role="note" aria-label="프로모션">
@@ -74,21 +68,14 @@
 		<section class="hero">
 			<div class="hero-content">
 				<c:choose>
-					<c:when test="${empty sessionScope.loginId}">
+					<c:when test="${empty sessionScope.loginDisplayName}">
 						<h1>온라인 서점에 오신 것을 환영합니다</h1>
 						<p>다양한 도서를 만나보세요</p>
 					</c:when>
 					<c:otherwise>
-			            <h1>
-			              <c:choose>
-			                <c:when test="${not empty sessionScope.loginDisplayName}">
-			                  ${sessionScope.loginDisplayName}님, 오늘도 반가워요 👋
-			                </c:when>
-			                <c:otherwise>회원님, 오늘도 반가워요 👋</c:otherwise>
-			              </c:choose>
-			            </h1>
-			            <p>관심사 기반 추천과 최근 본 도서를 이어서 확인해보세요</p>
-			          </c:otherwise>
+						<h1>${sessionScope.loginDisplayName}님, 오늘도 반가워요 👋</h1>
+						<p>관심사 기반 추천과 최근 본 도서를 이어서 확인해보세요</p>
+					</c:otherwise>
 				</c:choose>
 
 				<div class="main-search">
@@ -115,7 +102,7 @@
 						<h2 class="section-title">이달의 책 😊</h2>
 					</c:when>
 					<c:otherwise>
-						<h2 class="section-title">${sessionScope.loginId}님을위한 추천 📚</h2>
+						<h2 class="section-title">${sessionScope.loginDisplayName}님을 위한 추천 📚</h2>
 					</c:otherwise>
 				</c:choose>
 
@@ -413,6 +400,15 @@
 
 	<!-- 페이지 전용 JS -->
 	<script src="<c:url value='/resources/js/main.js'/>"></script>
+
+	<!-- ✅ 회원 탈퇴 완료 알림 -->
+	<script>
+	  document.addEventListener("DOMContentLoaded", function() {
+	    const urlParams = new URLSearchParams(window.location.search);
+	    if (urlParams.get("status") === "withdraw_success") {
+	      alert("회원 탈퇴가 완료되었습니다.");
+	    }
+	  });
+	</script>
 </body>
 </html>
-
