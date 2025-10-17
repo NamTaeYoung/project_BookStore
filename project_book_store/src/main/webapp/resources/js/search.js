@@ -52,6 +52,7 @@ function bindCartButtons() {
       if(!loginId || loginId.trim() === "") {
         alert("로그인 후 이용해주세요.");
         console.log("⚠ 로그인 안됨 -> 로그인 페이지로 이동");
+        window.location.href = `${ctx}/login`;
         return;
       }
 
