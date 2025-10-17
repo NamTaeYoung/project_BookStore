@@ -24,7 +24,7 @@ public class SearchController {
     private SqlSession sqlSession;
 
     // /Search?q=검색어&genre_id=장르아이디
-    @GetMapping("/Search")
+    @GetMapping({"/Search","/search"})
     public String search(@RequestParam(value="q", required=false) String q,
                          @RequestParam(value="genre_id", required=false) Integer genre_id,
                          Model model) {
