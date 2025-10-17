@@ -1,120 +1,102 @@
-// 사용자 로그인 상태 렌더링
-function renderByAuth() {
-  const userName = localStorage.getItem('userName');
-  const guestLinks = document.getElementById('guestLinks');
-  const userGreeting = document.getElementById('userGreeting');
-  const userNameText = document.getElementById('userNameText');
+// ===================== Search 페이지 스크립트 =====================
+const grid  = document.getElementById('grid');
+const grid2 = document.getElementById('grid2');
+const pager = document.getElementById('pager');
+const countText = document.getElementById('countText');
 
-  if (userName) {
-    if (userNameText) userNameText.textContent = userName;
-    if (guestLinks) guestLinks.style.display = 'none';
-    if (userGreeting) userGreeting.style.display = 'flex';
+// JSP에서 전달한 컨텍스트 경로(없으면 빈 문자열)
+const metaTag = document.querySelector('meta[name="ctx"]');
+const ctx = metaTag ? metaTag.content : '';
+
+// 카드 템플릿: 제목/썸네일 클릭 시 상세 페이지로 이동
+function card(b){
+  const id     = b.id || b.book_id;
+  const title  = b.title || b.book_title || '';
+  const author = b.author || b.book_writer || b.writer || '';
+  const price  = Number(b.price || b.book_price || 0);
+  const image  = b.image || b.book_image_path || '';
+  const tag    = b.tag || b.book_comm || '';
+  const href   = ctx + "/SearchDetail?book_id=" + id;  // ✅ JSP 안전 버전
+
+  let html = "";
+  html += '<div class="card">';
+  html += '  <a class="thumb" href="' + href + '" aria-label="' + title + '">';
+  if (image) {
+    html += '    <img src="' + image + '" alt="' + title + '">';
   } else {
-    if (userGreeting) userGreeting.style.display = 'none';
-    if (guestLinks) guestLinks.style.display = 'flex';
+    html += '    <div class="placeholder"></div>';
   }
-}
-
-function logout() {
-  if (confirm('정말 로그아웃 하시겠습니까?')) {
-    localStorage.removeItem('userName');
-    localStorage.removeItem('isLoggedIn');
-    // 메인으로 이동
-    window.location.href = getCtxUrl('/main');
+  if (tag) {
+    html += '    <span class="badge">' + tag + '</span>';
   }
+  html += '  </a>';
+  html += '  <div class="info">';
+  html += '    <h3 class="title-sm"><a class="book-link" href="' + href + '">' + title + '</a></h3>';
+  html += '    <p class="author">' + author + '</p>';
+  html += '    <div class="info-bottom">';
+  html += '      <p class="price">' + price.toLocaleString() + '원</p>';
+  html += '      <button class="cart-btn" data-book-id="' + id + '">';
+  html += '        <svg viewBox="0 0 24 24" fill="none">';
+  html += '          <path d="M6 6h15l-1.5 8.5a2 2 0 0 1-2 1.5H9a2 2 0 0 1-2-1.5L5 3H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+  html += '        </svg>담기</button>';
+  html += '    </div>';
+  html += '  </div>';
+  html += '</div>';
+  return html;
 }
 
-// 탭 전환
-function switchTabByName(tabName) {
-  document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+let activeCat = 'all';
+let searchQuery = '';
 
-  const targetBtn = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
-  const targetContent = document.getElementById(`${tabName}Content`);
-  if (targetBtn) targetBtn.classList.add('active');
-  if (targetContent) targetContent.classList.add('active');
-}
+// 장바구니 버튼 이벤트 등록
+function bindCartButtons() {
+  const buttons = document.querySelectorAll(".cart-btn");
+  buttons.forEach(function(btn){
+    btn.addEventListener("click", function() {
+      const bookId = this.dataset.bookId;
+      if (!confirm("장바구니에 담으시겠습니까?")) return;
 
-// 장바구니 담기
-function addToCart() {
-  const titleEl = document.querySelector('.product-title');
-  const productTitle = titleEl ? titleEl.textContent.trim() : '이 상품';
-  if (confirm(`"${productTitle}"을(를) 장바구니에 추가하시겠습니까?`)) {
-    // TODO: 실제 서버 요청으로 교체 (예: fetch('/cart/add', {method:'POST', body:...}))
-    alert('장바구니에 추가되었습니다!');
-  }
-}
-
-// 바로 구매
-function buyNow() {
-  const titleEl = document.querySelector('.product-title');
-  const productTitle = titleEl ? titleEl.textContent.trim() : '이 상품';
-  if (confirm(`"${productTitle}"을(를) 바로 구매하시겠습니까?`)) {
-    // TODO: 결제 페이지로 이동 (서버 경로에 맞게 수정)
-    alert('결제 페이지로 이동합니다.');
-    // window.location.href = getCtxUrl('/checkout');
-  }
-}
-
-// 리뷰 제출
-function submitReview() {
-  const rating = document.querySelector('input[name="rating"]:checked');
-  const reviewText = (document.getElementById('reviewText') || {}).value || '';
-  const text = reviewText.trim();
-
-  if (!rating) { alert('평점을 선택해주세요.'); return; }
-  if (!text) { alert('리뷰 내용을 입력해주세요.'); return; }
-
-  if (confirm('리뷰를 등록하시겠습니까?')) {
-    // TODO: 실제 서버 요청으로 교체
-    alert('리뷰가 등록되었습니다!');
-    document.getElementById('reviewText').value = '';
-    document.querySelectorAll('input[name="rating"]').forEach(i => i.checked = false);
-  }
-}
-
-// 컨텍스트 경로가 있으면 붙여주는 헬퍼 (스프링에서 필요시)
-function getCtxUrl(path) {
-  // JSP에서 <base> 태그나 c:url을 쓰는 것이 이상적이지만,
-  // JS 내에서 동적으로 경로가 필요하면 아래를 사용하세요.
-  return path; // 필요 시 커스텀 로직 추가
-}
-
-// 초기 바인딩
-document.addEventListener('DOMContentLoaded', () => {
-  // 로그인 상태 처리
-  renderByAuth();
-
-  // 로그아웃 버튼 동작
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      logout();
-    });
-  }
-
-  // 탭 버튼들 이벤트
-  document.querySelectorAll('.tab-button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tab = btn.getAttribute('data-tab');
-      switchTabByName(tab);
+      fetch(ctx + "/cartAdd", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: "book_id=" + encodeURIComponent(bookId)
+      })
+      .then(res => res.text())
+      .then(() => alert("장바구니에 담겼습니다!"))
+      .catch(err => {
+        console.error(err);
+        alert("장바구니 담기 실패");
+      });
     });
   });
+}
 
-  // 액션 버튼
-  const btnAddToCart = document.getElementById('btnAddToCart');
-  const btnBuyNow = document.getElementById('btnBuyNow');
-  const btnSubmitReview = document.getElementById('btnSubmitReview');
+// apply() — 책 리스트 렌더링 후 버튼 이벤트 다시 연결
+function apply(){
+  const list = books.filter(function(b){
+    const catId = (b.cat || b.genre_id);
+    const catMatch = activeCat === 'all' ? true : Number(catId) === Number(activeCat);
+    const t = (b.title || b.book_title || '').toLowerCase();
+    const a = (b.author || b.book_writer || b.writer || '').toLowerCase();
+    const q = (searchQuery || '').toLowerCase();
+    const searchMatch = q === '' ? true : (t.includes(q) || a.includes(q));
+    return catMatch && searchMatch;
+  });
 
-  btnAddToCart && btnAddToCart.addEventListener('click', addToCart);
-  btnBuyNow && btnBuyNow.addEventListener('click', buyNow);
-  btnSubmitReview && btnSubmitReview.addEventListener('click', submitReview);
+  countText.textContent = "총 " + list.length + "권";
+  grid.innerHTML = list.map(card).join('');
+  bindCartButtons();
+}
 
-  // 이미지가 있으면 배경 이모지 제거 클래스는 JSP에서 이미 처리했지만,
-  // 혹시 동적으로 이미지가 주입되는 경우를 대비한 보정:
-  const imgWrap = document.querySelector('.product-image');
-  if (imgWrap && imgWrap.querySelector('img')) {
-    imgWrap.classList.add('has-image');
-  }
-});
+// 검색 이벤트
+const searchForm = document.getElementById('searchForm');
+if (searchForm) {
+  searchForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    searchQuery = document.getElementById('q').value.trim();
+    apply();
+  });
+}
+
+// 초기 렌더링
+apply();
