@@ -80,16 +80,46 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
 .product-description p{ font-size:16px; line-height:1.6; color:var(--text); margin:0; }
 
 .product-actions{ display:flex; gap:12px; margin-top:auto; padding-top:20px; justify-content:flex-end; }
-.btn{
-  padding:14px 28px; border:none; border-radius:10px; font-size:16px; font-weight:600;
-  cursor:pointer; transition:all .3s; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
-  min-width:140px; justify-content:center;
+.btn {
+  padding:14px 28px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .3s;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-width:140px;
 }
-.btn-primary{ background:var(--brand); color:#fff; box-shadow:0 4px 12px rgba(126, 88, 68, 0.3); }
-.btn-primary:hover{ background:var(--brand-dark); transform:translateY(-2px); box-shadow:0 6px 16px rgba(126, 88, 68, 0.4); }
-.btn-secondary{ background:#6c757d; color:#fff; box-shadow:0 4px 12px rgba(108, 117, 125, 0.3); }
-.btn-secondary:hover{ background:#5a6268; transform:translateY(-2px); box-shadow:0 6px 16px rgba(108, 117, 125, 0.4); }
+/* 장바구니 담기 → 브랜드 갈색 */
+.btn-primary {
+  background:var(--brand);
+  color:#fff;
+  box-shadow:0 4px 12px rgba(126, 88, 68, 0.3);
+}
+.btn-primary:hover {
+  background:var(--brand-dark);
+  transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(126, 88, 68, 0.4);
+}
 
+/* 구매하기 버튼 → 이미지의 회색톤 */
+.btn-secondary {
+  background:#6e767d;             /* 이미지와 비슷한 회색 */
+  color:#fff;
+  font-weight:700;
+  box-shadow:0 4px 12px rgba(0,0,0,0.25);
+  transition:all .25s ease;
+}
+.btn-secondary:hover {
+  background:#5d646a;             /* hover 시 살짝 진하게 */
+  transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(0,0,0,0.35);
+}
 /* 상세 섹션 공통 */
 .detail-section{ margin-bottom:30px; padding:20px; background:#f8f9fa; border-radius:12px; }
 .detail-section h4{ margin:0 0 15px; color:var(--brand); font-size:18px; font-weight:700; }
@@ -233,30 +263,36 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
 .detailhead{
   background: linear-gradient(135deg, #665c54 0%, #8b4f2f 100%);
   color:#fff;
-  padding:40px 20px;
+  padding:35px 0 25px;
   min-height:140px;
   display:flex;
   align-items:center;
   margin-bottom: clamp(16px, 3vw, 32px);
 }
+
+/* margin-bottom: clamp(16px, 3vw, 32px); */
 .detailsubwrap{
   max-width:1100px;
   margin:0 auto;
-  text-align:center;
+  padding:0 20px;     /* 본문 카드와 좌우 여백 맞춤(선택) */
+  text-align:left;    /* ← 왼쪽 정렬 */
 }
 .detailhead .title{
   margin:0;
   font-size:clamp(24px, 3.2vw, 32px);
   font-weight:800;
+  text-align:center;
 }
 .detailhead .meta{
   opacity:.9;
   margin-top:6px;
   font-size:15px;
+  
 }
 .detailhead .breadcrumb a{
   color:#fff;
   text-decoration:underline;
+  
 }
 
 .breadcrumb.inside-detail {
@@ -288,5 +324,84 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
 @media (max-width:768px){
   .breadcrumb.in-card{ padding: 12px 20px 0; }
   .product-detail .product-main{ padding: 20px; padding-top: 20px; }
+}
+
+/* ===== 도서 상세 정보 (표 스타일) ===== */
+.book-details-section{
+  background:#fff;             /* 카드 배경 */
+  border:1px solid #eceff1;       /* 얇은 테두리 */
+  border-radius:16px;
+  padding:22px 24px;
+  margin:32px 0;
+}
+
+.book-details-section h3{
+  margin:0 0 14px;
+  font-size:18px;
+  font-weight:800;
+  color:var(--brand);              /* 갈색 제목 */
+  letter-spacing:.2px;
+}
+
+/* 2열 그리드 (각 셀은 [라벨 | 값]) */
+.book-details-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;  /* 좌/우 두 블록 */
+  column-gap:0;
+  row-gap:0;
+  background:#f7f8f9;                /* 내부 표 배경 */
+  border-radius:12px;
+  border:1px solid #eef2f4;
+  overflow:hidden;
+}
+
+/* 각 블록(왼쪽, 오른쪽) */
+.book-detail-item{
+  display:grid;
+  grid-template-columns: 120px 1fr; /* 라벨 폭 고정 */
+  align-items:center;
+  padding:14px 18px;
+  border-top:1px solid #f0f2f4;
+}
+
+/* 첫 행(좌/우) 위쪽 구분선 제거 */
+.book-detail-item:nth-child(-n+2){ border-top:none; }
+
+/* 가운데 세로 구분선: 왼쪽 칸들에만 */
+.book-detail-item:nth-child(odd){
+  border-right:1px solid #f0f2f4;
+}
+
+/* 라벨(연한 회색 칩 느낌) */
+.detail-label{
+  font-weight:700;
+  font-size:13px;
+  color:#7a7a7a;
+}
+
+/* 값 */
+.detail-value{
+  font-size:15px;
+  font-weight:700;
+  color:#222;
+}
+
+/* 숫자류 가독성 (ISBN 등) */
+.detail-value.mono{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  letter-spacing:.3px;
+  font-weight:600;
+}
+
+/* 좁은 화면: 1열로 접기 */
+@media (max-width:768px){
+  .book-details-grid{
+    grid-template-columns:1fr;
+    border-radius:12px;
+  }
+  .book-detail-item{
+    grid-template-columns: 90px 1fr;
+    border-right:none !important;
+  }
 }
 
