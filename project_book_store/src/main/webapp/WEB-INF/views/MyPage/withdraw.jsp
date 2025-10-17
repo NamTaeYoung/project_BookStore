@@ -65,22 +65,42 @@
                     </div>
 
                     <!-- 탈퇴 폼 -->
-                    <form id="withdrawForm">
-                        <div class="form-group">
-                            <label class="form-label" for="userId">아이디</label>
-                            <input type="text" id="userId" class="form-input" value="${sessionScope.userId}" disabled>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="userPassword">본인확인을 위해 비밀번호를 입력해주세요</label>
-                            <input type="password" id="userPassword" class="form-input" placeholder="비밀번호" required>
-                        </div>
+                    <form id="withdrawForm" method="post" action="<c:url value='/mypage/withdraw_ok'/>">
+  <div class="form-group">
+    <label class="form-label" for="userId">아이디</label>
+    <input type="text" id="userId" class="form-input" value="${sessionScope.loginId}" disabled>
+  </div>
 
-                        <div class="button-group">
-                            <button type="submit" class="btn btn-primary">회원 탈퇴</button>
-                            <button type="button" class="btn btn-secondary" onclick="location.href='${pageContext.request.contextPath}/mypage/info'">취소</button>
-                        </div>
-                    </form>
+  <c:choose>
+    <%-- 일반 회원용 --%>
+    <c:when test="${sessionScope.loginType eq 'LOCAL' or empty sessionScope.loginType}">
+      <div class="form-group">
+        <label class="form-label" for="userPassword">비밀번호</label>
+        <input type="password" id="userPassword" name="user_pw" class="form-input"
+               placeholder="비밀번호를 입력해주세요" required>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">회원 탈퇴</button>
+        <button type="button" class="btn btn-secondary"
+                onclick="location.href='<c:url value="/mypage"/>'">취소</button>
+      </div>
+    </c:when>
+
+    <%-- 소셜 로그인 회원용 (카카오 / 네이버 / 구글) --%>
+    <c:otherwise>
+      <div class="notice-box">
+        <p>${sessionScope.loginType} 계정으로 로그인된 회원은 비밀번호 입력 없이 즉시 탈퇴할 수 있습니다.</p>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn btn-danger">${sessionScope.loginType} 계정 탈퇴</button>
+        <button type="button" class="btn btn-secondary"
+                onclick="location.href='<c:url value="/mypage"/>'">취 소</button>
+      </div>
+    </c:otherwise>
+  </c:choose>
+</form>
                 </div>
             </div>
         </div>
@@ -101,4 +121,5 @@
     <!-- JavaScript 파일 링크 -->
     <script src="${pageContext.request.contextPath}/resources/js/withdraw.js"></script>
 </body>
+
 </html>
