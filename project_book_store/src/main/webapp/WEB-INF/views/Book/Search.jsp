@@ -24,6 +24,12 @@
 
 <!-- External CSS -->
 <link rel="stylesheet" href="<c:url value='/resources/css/search.css'/>">
+
+<!-- 로그인 ID를 JS에서 사용 가능하게 정의 -->
+<script>
+  const loginId = "${sessionScope.loginId != null ? sessionScope.loginId : ''}";
+</script>
+
 </head>
 <body>
 
