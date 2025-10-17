@@ -1,0 +1,6 @@
+drop table Genre;
+drop table Book;
+drop table BookList;
+drop table BookBuy;
+drop table cart;
+drop table users;
