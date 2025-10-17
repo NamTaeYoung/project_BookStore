@@ -22,7 +22,14 @@
                 <img src="${pageContext.request.contextPath}/resources/img/book_logo.png" alt="책갈피 로고" class="brand-logo" />
             </a>
             <div class="nav-right">
-                <span id="userGreeting" style="color:var(--brand); font-weight:700;">${sessionScope.userName}님 반갑습니다</span>
+               <span id="userGreeting" style="color:var(--brand); font-weight:700;">
+                  <c:choose>
+                    <c:when test="${not empty sessionScope.loginDisplayName}">
+                      ${sessionScope.loginDisplayName}님 반갑습니다
+                     </c:when>
+                    <c:otherwise>회원님 반갑습니다</c:otherwise>
+                  </c:choose>
+                </span>
                 <a href="#" onclick="logout()">로그아웃</a>
                 <a href="${pageContext.request.contextPath}/cart">장바구니</a>
             </div>
@@ -123,3 +130,4 @@
 </body>
 
 </html>
+
