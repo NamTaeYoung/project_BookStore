@@ -61,7 +61,36 @@
 
           <div class="alert alert-danger" style="color:red; margin-bottom:5px; font-size:12px;position:relative; top:5px;">
 		  	    ${login_err}
-		      </div>
+		  </div><br>
+		  
+		  <!-- 소셜 로그인 버튼 묶음 -->
+		  <div style="display:flex; gap:15px; justify-content:center; margin-top:15px;">
+		    <!-- 카카오 로그인 -->
+		    <a href="https://kauth.kakao.com/oauth/authorize?client_id=0bf85d9670caf8a587aaf1254fe3b120&redirect_uri=http://localhost:8181/project_book_store/oauth/kakao&response_type=code&prompt=login">
+		      <img src="<c:url value='/resources/img/kakao_logo.png'/>"
+		           alt="카카오 로그인"
+		           style="width:50px; height:50px; cursor:pointer; border-radius:50%;">
+		    </a>
+		    <!-- 네이버 로그인 -->
+		    <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=M9W3QAsKHIjJb2oLN0G5&redirect_uri=http://localhost:8181/project_book_store/oauth/naver&state=pylzhNXTCV&auth_type=reprompt">
+		      <img src="<c:url value='/resources/img/naver_logo.png'/>"
+		           alt="네이버 로그인"
+		           style="width:50px; height:50px; cursor:pointer; border-radius:50%;">
+		    </a>
+		    <!-- 구글 로그인 -->
+		    <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=374666348001-eihitmnjhot670oo4qahudbkb4662rf1.apps.googleusercontent.com&redirect_uri=http://localhost:8181/project_book_store/oauth/google&response_type=code&scope=email%20profile&access_type=offline&prompt=consent">
+		      <img src="<c:url value='/resources/img/google_logo.png'/>"
+		           alt="구글 로그인"
+		           style="width:50px; height:50px; cursor:pointer; border-radius:50%;">
+		    </a>
+		  </div>
+		  
+		  <c:if test="${not empty sessionScope.socialLoginError}">
+		    <div class="alert alert-danger" style="color:red; font-size:12px; margin-bottom:5px;">
+		      ${sessionScope.socialLoginError}
+		    </div>
+		    <c:remove var="socialLoginError" scope="session"/>
+		  </c:if>
 
           <div class="forgot-links">
             <a href="#" class="forgot" onclick="showAccountFindModal()">계정을 잊으셨나요?</a>
@@ -137,5 +166,6 @@
   <script src="<c:url value='/resources/js/login.js'/>"></script>
 </body>
 </html>
+
 
 
