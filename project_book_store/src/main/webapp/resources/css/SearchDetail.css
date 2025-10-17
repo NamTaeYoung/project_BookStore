@@ -40,11 +40,8 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
 .nav-right a{ color:#333; text-decoration:none; }
 .nav-right a:hover{ color:var(--brand-dark) }
 
-/* Promo Bar */
-.promo { background:var(--brand); height:3px; width:100%; }
-
 /* Page */
-.page-wrap{ min-height:calc(100vh - 3px - 62px); background:var(--section-bg); padding:40px 0; }
+.page-wrap{ min-height:calc(100vh - 3px - 62px); background:var(--section-bg); padding:0; }
 .page-container{ max-width:1100px; margin:0 auto; padding:0 20px; }
 
 /* Breadcrumb */
@@ -231,5 +228,74 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
   .tab-nav{ flex-direction:column; }
   .tab-button{ border-bottom:1px solid #eee; border-right:none; }
   .tab-button.active{ border-bottom-color:var(--brand); border-right-color:transparent; }
+}
+/* ===== 상단 서브헤더 ===== */
+.detailhead{
+  background: linear-gradient(135deg, #665c54 0%, #8b4f2f 100%);
+  color:#fff;
+  padding:40px 20px;
+  min-height:140px;
+  display:flex;
+  align-items:center;
+  margin-bottom: clamp(16px, 3vw, 32px);
+}
+.detailsubwrap{
+  max-width:1100px;
+  margin:0 auto;
+  text-align:center;
+}
+.detailhead .title{
+  margin:0;
+  font-size:clamp(24px, 3.2vw, 32px);
+  font-weight:800;
+}
+.detailhead .meta{
+  opacity:.9;
+  margin-top:6px;
+  font-size:15px;
+}
+/* .detailhead .breadcrumb{ */
+/*   margin:8px 0 0; */
+/*   color:#fff; */
+/*   opacity:1; */
+/* } */
+.detailhead .breadcrumb a{
+  color:#fff;
+  text-decoration:underline;
+}
+
+/* 새 breadcrumb 위치 */
+.breadcrumb.inside-detail {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.breadcrumb.inside-detail a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.breadcrumb.inside-detail a:hover {
+  text-decoration: underline;
+}
+
+/* 카드 내부 상단 줄로 쓰는 breadcrumb */
+.breadcrumb.in-card{
+  margin: 0;             /* 바깥여백 제거 */
+  padding: 16px 40px 0;  /* 좌우 40px = 카드 내부 패딩과 정렬, 위는 16px만 */
+  font-size: 14px;
+  color: var(--muted);
+}
+.breadcrumb.in-card a{ color:var(--brand); text-decoration:none; }
+.breadcrumb.in-card a:hover{ text-decoration:underline; }
+
+/* 빵꾸러미 바로 아래 내용이 너무 벌어지지 않도록 윗패딩만 줄임 */
+.product-detail .product-main{ padding-top:24px; } /* 기본 40px → 24px */
+
+/* 모바일일 때 카드 내부 패딩이 20px 느낌으로 줄어들게 */
+@media (max-width:768px){
+  .breadcrumb.in-card{ padding: 12px 20px 0; }
+  .product-detail .product-main{ padding: 20px; padding-top: 20px; }
 }
 
