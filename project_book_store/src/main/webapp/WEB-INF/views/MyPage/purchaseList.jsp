@@ -18,14 +18,14 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/purchaseList.css">
 </head>
 <body>
-	<!-- Header -->
+   <!-- Header -->
     <header>
         <nav class="nav" aria-label="주요 메뉴">
             <a href="${pageContext.request.contextPath}/main" class="brand">
                 <img src="${pageContext.request.contextPath}/resources/img/book_logo.png" alt="책갈피 로고" class="brand-logo" />
             </a>
             <div class="nav-right">
-                <span id="userGreeting" style="color:var(--brand); font-weight:700;">${sessionScope.userName}님 반갑습니다</span>
+                <span id="userGreeting" style="color:var(--brand); font-weight:700;">${sessionScope.loginDisplayName}님 반갑습니다</span>
                 <a href="#" onclick="logout()">로그아웃</a>
                 <a href="${pageContext.request.contextPath}/cart">장바구니</a>
             </div>
@@ -35,60 +35,60 @@
     <!-- Promo Bar -->
     <div class="promo" aria-hidden="true"></div>
 
-	<main class="page-wrap">
-	    <div class="page-container">
-	        <h1 class="page-title">마이페이지</h1>
-	
-	        <div class="tab-nav">
-	            <button class="tab-button" onclick="location.href='${pageContext.request.contextPath}/mypage'">정보</button>
-	            <button class="tab-button" onclick="location.href='${pageContext.request.contextPath}/mypage/edit'">내정보 수정</button>
-	            <button class="tab-button active" onclick="location.href='${pageContext.request.contextPath}/MyPage/purchaseList'">구매내역</button>
-	            <button class="tab-button" onclick="location.href='${pageContext.request.contextPath}/mypage/withdraw'">회원탈퇴</button>
-	        </div>
-	
-	        <div class="content-card">
-	            <div class="content-header">
-	                <h2 class="content-title">구매 내역</h2>
-	            </div>
-	
-	            <div class="table-container">
-	                <table class="purchase-table">
-	                    <thead>
-	                        <tr>
-	                            <th>주문번호</th>
-	                            <th>주문일</th>
-	                            <th>도서명</th>
-	                            <th>수량</th>
-	                            <th>결제금액</th>
-	                        </tr>
-	                    </thead>
-	                    <tbody id="purchaseTableBody">
-						  <c:choose>
-						    <c:when test="${not empty purchaseList}">
-						      <c:forEach var="item" items="${purchaseList}" varStatus="status">
-						        <tr data-page="${fn:substringBefore((status.index div 10) + 1, '.')}">
-						          <td>#${item.buy_id}</td>
-						          <td><fmt:formatDate value="${item.purchase_date}" pattern="yyyy-MM-dd" /></td>
-						          <td>${item.book.book_title}</td>
-						          <td>${item.quantity}</td>
-						          <td>₩${item.book.book_price * item.quantity}</td>
-						        </tr>
-						      </c:forEach>
-						    </c:when>
-						    <c:otherwise>
-						      <tr>
-						        <td colspan="5" style="text-align:center;">구매 내역이 없습니다.</td>
-						      </tr>
-						    </c:otherwise>
-						  </c:choose>
-						</tbody>
-	                </table>
-	            </div>
-	
-	            <div class="pagination" id="pagination"></div>
-	        </div>
-	    </div>
-	</main>
+   <main class="page-wrap">
+       <div class="page-container">
+           <h1 class="page-title">마이페이지</h1>
+   
+           <div class="tab-nav">
+               <button class="tab-button" onclick="location.href='${pageContext.request.contextPath}/mypage'">정보</button>
+               <button class="tab-button" onclick="location.href='${pageContext.request.contextPath}/mypage/edit'">내정보 수정</button>
+               <button class="tab-button active" onclick="location.href='${pageContext.request.contextPath}/MyPage/purchaseList'">구매내역</button>
+               <button class="tab-button" onclick="location.href='${pageContext.request.contextPath}/mypage/withdraw'">회원탈퇴</button>
+           </div>
+   
+           <div class="content-card">
+               <div class="content-header">
+                   <h2 class="content-title">구매 내역</h2>
+               </div>
+   
+               <div class="table-container">
+                   <table class="purchase-table">
+                       <thead>
+                           <tr>
+                               <th>주문번호</th>
+                               <th>주문일</th>
+                               <th>도서명</th>
+                               <th>수량</th>
+                               <th>결제금액</th>
+                           </tr>
+                       </thead>
+                       <tbody id="purchaseTableBody">
+                    <c:choose>
+                      <c:when test="${not empty purchaseList}">
+                        <c:forEach var="item" items="${purchaseList}" varStatus="status">
+                          <tr data-page="${fn:substringBefore((status.index div 10) + 1, '.')}">
+                            <td>#${item.buy_id}</td>
+                            <td><fmt:formatDate value="${item.purchase_date}" pattern="yyyy-MM-dd" /></td>
+                            <td>${item.book.book_title}</td>
+                            <td>${item.quantity}</td>
+                            <td>₩${item.book.book_price * item.quantity}</td>
+                          </tr>
+                        </c:forEach>
+                      </c:when>
+                      <c:otherwise>
+                        <tr>
+                          <td colspan="5" style="text-align:center;">구매 내역이 없습니다.</td>
+                        </tr>
+                      </c:otherwise>
+                    </c:choose>
+                  </tbody>
+                   </table>
+               </div>
+   
+               <div class="pagination" id="pagination"></div>
+           </div>
+       </div>
+   </main>
 
     <!-- Footer -->
     <footer class="footer">
