@@ -1,0 +1,50 @@
+INSERT INTO Genre (genre_id, genre_name) VALUES (1, '소설');
+INSERT INTO Genre (genre_id, genre_name) VALUES (2, '에세이');
+INSERT INTO Genre (genre_id, genre_name) VALUES (3, '인문/사회');
+INSERT INTO Genre (genre_id, genre_name) VALUES (4, '과학/기술');
+INSERT INTO Genre (genre_id, genre_name) VALUES (5, '경제/경영');
+
+UPDATE Book
+SET book_image_path = 'https://contents.kyobobook.co.kr/sih/fit-in/400x0/pdt/9791189413408.jpg'
+WHERE book_id = 101;
+
+DELETE FROM cart;
+DELETE FROM Book;
+DELETE FROM users;
+
+select * from Genre;
+select * from Book;
+select * from BookList;
+select * from BookBuy;
+select * from cart;
+select * from users;
+
+SELECT * FROM cart WHERE user_id = 'user01';
+
+-- 2. 도서 데이터 (중복 키워드 "데미안" 포함)
+INSERT ALL
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (101, '데미안', '헤르만 헤세', '민음사', TO_DATE('2019-03-15','YYYY-MM-DD'), 1, 12000, 15, '청춘과 자아 찾기를 다룬 소설', '9788937460018')
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (102, '데미안의 모험', '김철수', '판타지출판사', TO_DATE('2022-05-10','YYYY-MM-DD'), 1, 18000, 10, '흥미진진한 판타지 소설', '9788991122334')
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (103, '데미안과 시간 여행', '이영희', '판타지월드', TO_DATE('2023-01-20','YYYY-MM-DD'), 1, 20000, 5, '시간 여행을 다룬 판타지 소설', '9788991122335')
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (104, '미스터리 데미안', '박민수', '미스터리북스', TO_DATE('2021-10-05','YYYY-MM-DD'), 2, 22000, 3, '미스터리한 사건을 추적하는 이야기', '9788991122336')
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (105, '데미안의 그림자', '최수진', '미스터리북스', TO_DATE('2020-08-15','YYYY-MM-DD'), 2, 21000, 4, '긴장감 넘치는 미스터리 소설', '9788991122337')
+SELECT * FROM dual;
+
+-- 3. 다른 도서 샘플
+INSERT ALL
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (106, '나의 하루는 4시 30분에 시작된다', '김유진', '위즈덤하우스', TO_DATE('2020-07-10','YYYY-MM-DD'), 2, 15000, 20, '효율적인 시간 관리 에세이', '9788960869573')
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (107, '인간 본성에 대하여', '스티븐 핑커', '알마', TO_DATE('2018-11-05','YYYY-MM-DD'), 3, 22000, 10, '인간 심리와 본성에 관한 인문서', '9788998291172')
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (108, '파이썬 프로그래밍', '윤인성', '한빛미디어', TO_DATE('2021-05-10','YYYY-MM-DD'), 4, 18000, 12, '기초 코딩 개념과 파이썬 문법을 다룸', '9788968482233')
+  INTO Book (book_id, book_title, book_writer, book_pub, book_date, genre_id, book_price, book_count, book_comm, book_isbn)
+    VALUES (109, '경제학 콘서트', '팀 하포드', '청림출판', TO_DATE('2017-09-15','YYYY-MM-DD'), 5, 20000, 8, '쉽고 재미있는 경제 원리 설명서', '9788935219342')
+SELECT * FROM dual;
+
+commit;
