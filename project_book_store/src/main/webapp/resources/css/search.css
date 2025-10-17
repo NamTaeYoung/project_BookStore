@@ -49,8 +49,8 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
 .subwrap{
   max-width: 1100px;
   margin: 0 auto;
-  text-align: center;}
-}
+  text-align: center;
+ }
 .title{ margin:0; font-size:clamp(24px, 3.2vw, 32px); font-weight:800 }
 .meta{ opacity:.9; margin-top:6px; font-size:15px }
 .controls{ display:flex; gap:10px; align-items:center }
@@ -205,4 +205,18 @@ header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px s
 @media (max-width:480px){
   .nav-right{ gap:12px; font-size:.92rem }
   .brand-logo{ height:24px; }
+}
+/* 제목 및 제목 링크 스타일 동일화 */
+.title-sm,
+.title-sm a.title-link {
+  color: #1c1c1c;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.title-sm a.title-link:hover,
+.title-sm a.title-link:focus,
+.title-sm a.title-link:active {
+  color: #1c1c1c;          /* hover 시에도 색 변화 없음 */
+  text-decoration: none;   /* 밑줄 없음 */
 }
