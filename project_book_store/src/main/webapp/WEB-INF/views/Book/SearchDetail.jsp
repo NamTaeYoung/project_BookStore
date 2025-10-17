@@ -67,7 +67,7 @@
 		<div class="page-container">
 			<div class="product-detail">
 				<p class="breadcrumb in-card">
-					홈 &gt; 도서 목록 &gt;
+					홈 &gt; 도서 &gt;
 					<c:out value="${book.book_title}" />
 				</p>
 				<div class="product-main">
