@@ -18,7 +18,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @PostMapping("/cartAdd")
+    @PostMapping(value="/cartAdd", produces="text/plain; charset=UTF-8")
     @ResponseBody
     public String addCart(
             @RequestParam("book_id") int book_id,
@@ -26,10 +26,9 @@ public class CartController {
 
         System.out.println("addCart() 호출됨! book_id = " + book_id);
 
-        // 세션에서 로그인한 유저 ID 가져오기
-        String user_id = (String) session.getAttribute("loginId"); // 수정!
+        String user_id = (String) session.getAttribute("loginId");
         if (user_id == null) {
-            return "로그인 후 이용해주세요.";
+            return "로그인 후 이용해주세요."; // 한글 깨짐 방지됨
         }
 
         try {
@@ -38,7 +37,7 @@ public class CartController {
             cart.setQuantity(1);
             cart.setUser_id(user_id);
 
-            cartService.addCart(cart); // 서비스에서 DB insert + commit 처리
+            cartService.addCart(cart);
             System.out.println("장바구니에 추가 완료! user_id = " + user_id);
 
             return "success";
@@ -47,4 +46,5 @@ public class CartController {
             return "장바구니 담기 실패: " + e.getMessage();
         }
     }
+
 }
