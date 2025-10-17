@@ -145,9 +145,15 @@
     AND user_pw = #{user_pw, jdbcType=VARCHAR}
 </delete>
 
-  
+<!-- 소셜 로그인 회원 탈퇴 -->
+<delete id="withdrawSocial" parameterType="map">
+  DELETE FROM users
+  WHERE user_id = #{user_id, jdbcType=VARCHAR}
+	AND login_type = #{login_type, jdbcType=VARCHAR}
+</delete>
 
 </mapper>
+
 
 
 
