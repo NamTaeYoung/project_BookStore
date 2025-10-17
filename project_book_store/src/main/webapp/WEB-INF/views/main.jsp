@@ -40,18 +40,24 @@
 						<a href="<c:url value='/cart'/>">장바구니</a>
 					</c:when>
 
-					<%-- 로그인 후 --%>
-					<c:otherwise>
-						<a href="<c:url value='/mypage'/>">마이페이지</a>
-						<a href="<c:url value='/cart'/>">장바구니</a>
-						<a href="<c:url value='/logout'/>">로그아웃</a>
-						<span style="color: #666; font-weight: 700;">
-							${sessionScope.loginId}님 </span>
-					</c:otherwise>
-				</c:choose>
-			</div>
-		</nav>
-	</header>
+			        <%-- 로그인 후 --%>
+			        <c:otherwise>
+			          <a href="<c:url value='/mypage'/>">마이페이지</a>
+			          <a href="<c:url value='/cart'/>">장바구니</a>
+			          <a href="<c:url value='/logout'/>">로그아웃</a>
+			          <span style="color:#666; font-weight:700;">
+			            <c:choose>
+			              <c:when test="${not empty sessionScope.loginDisplayName}">
+			                ${sessionScope.loginDisplayName}님
+			              </c:when>
+			              <c:otherwise>회원님</c:otherwise>
+			            </c:choose>
+			          </span>
+			        </c:otherwise>
+			      </c:choose>
+			    </div>
+			  </nav>
+			</header>
 
 	<!-- 상단 프로모션 -->
 	<div class="promo" role="note" aria-label="프로모션">
@@ -73,9 +79,16 @@
 						<p>다양한 도서를 만나보세요</p>
 					</c:when>
 					<c:otherwise>
-						<h1>${sessionScope.loginId}님,오늘도 반가워요 👋</h1>
-						<p>관심사 기반 추천과 최근 본 도서를 이어서 확인해보세요</p>
-					</c:otherwise>
+			            <h1>
+			              <c:choose>
+			                <c:when test="${not empty sessionScope.loginDisplayName}">
+			                  ${sessionScope.loginDisplayName}님, 오늘도 반가워요 👋
+			                </c:when>
+			                <c:otherwise>회원님, 오늘도 반가워요 👋</c:otherwise>
+			              </c:choose>
+			            </h1>
+			            <p>관심사 기반 추천과 최근 본 도서를 이어서 확인해보세요</p>
+			          </c:otherwise>
 				</c:choose>
 
 				<div class="main-search">
@@ -402,3 +415,4 @@
 	<script src="<c:url value='/resources/js/main.js'/>"></script>
 </body>
 </html>
+
