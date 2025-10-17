@@ -70,7 +70,44 @@
             last_fail_time = NULL
         WHERE user_id = #{user_id}
     </update>
+
+	<!-- 이메일로 기존 회원 조회 -->
+	<select id="getUserByEmail" parameterType="string" resultType="com.lgy.project_book_store.dto.UserDTO">
+	    SELECT * FROM users WHERE user_email = #{user_email}
+	</select>
 	
+	<!-- 소셜 신규 회원 등록 -->
+	<insert id="insertSocialUser" parameterType="map">
+        INSERT INTO users (
+            user_id,
+            user_pw,
+            user_email,
+            user_name,
+            user_nickname,
+            login_type,
+            social_id,
+            user_email_chk,
+            user_phone_num,
+            user_post_num, 
+            user_address, 
+            user_detail_address,
+            reg_date
+        ) VALUES (
+            #{user_id},
+            'SOCIAL_LOGIN',
+            #{user_email},
+            #{user_name},
+            #{user_nickname},
+            #{login_type},
+            #{social_id},
+            'Y',
+            '000-0000-0000',
+            '47354',
+            '부산시',
+            '범내골',
+            SYSDATE
+        )
+    </insert>
   <!-- 마이페이지: 단건 조회 -->
   <select id="selectUser" parameterType="hashmap" resultType="hashmap">
   SELECT
@@ -111,5 +148,6 @@
   
 
 </mapper>
+
 
 
