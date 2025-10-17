@@ -59,11 +59,12 @@
 	<main class="page-wrap">
 
 		<!-- 상단 그라디언트 헤더 -->
-		<section class="detailhead">
-			<div class="detailsubwrap">
-				<h1 class="title">도서 상세</h1>
-			</div>
-		</section>
+<section class="detailhead">
+  <div class="detailsubwrap">
+    <h1 class="title">도서 상세정보</h1>
+    <p class="meta subnote">책갈피가 엄선한 도서 정보를 한눈에 확인하세요.</p>
+  </div>
+</section>
 		<div class="page-container">
 			<div class="product-detail">
 				<p class="breadcrumb in-card">
@@ -106,10 +107,8 @@
 						</div>
 
 						<div class="product-actions">
-							<button class="btn" id="btnAddToCart" type="button">🛒
-								장바구니 담기</button>
-							<button class="btn btn-accent" id="btnBuyNow" type="button">💳
-								구매하기</button>
+							<button class="btn btn-primary" id="btnAddToCart" type="button">🛒장바구니 담기</button>
+							<button class="btn btn-secondary" id="btnBuyNow" type="button">💳구매하기</button>
 						</div>
 
 						<%-- 장바구니 폼 --%>
@@ -162,23 +161,21 @@
 					</div>
 
 					<div class="book-detail-item">
-						<span class="detail-label">ISBN</span><span class="detail-value"><c:out
-								value="${book.book_isbn}" /></span>
+						<span class="detail-label">ISBN</span> <span
+							class="detail-value mono"><c:out value="${book.book_isbn}" /></span>
 					</div>
 
-					<!-- 재고는 제거 -->
-
-					<!-- 장르: ID -> 이름 매핑 -->
 					<div class="book-detail-item">
 						<span class="detail-label">장르</span> <span class="detail-value">
-							<c:choose>
-								<c:when test="${book.genre_id == 1}">소설</c:when>
-								<c:when test="${book.genre_id == 2}">에세이</c:when>
-								<c:when test="${book.genre_id == 3}">인문/사회</c:when>
-								<c:when test="${book.genre_id == 4}">과학/기술</c:when>
-								<c:when test="${book.genre_id == 5}">경제/경영</c:when>
-								<c:otherwise>기타</c:otherwise>
-							</c:choose>
+							<span class="badge-genre"> <c:choose>
+									<c:when test="${book.genre_id == 1}">소설</c:when>
+									<c:when test="${book.genre_id == 2}">에세이</c:when>
+									<c:when test="${book.genre_id == 3}">인문/사회</c:when>
+									<c:when test="${book.genre_id == 4}">과학/기술</c:when>
+									<c:when test="${book.genre_id == 5}">경제/경영</c:when>
+									<c:otherwise>기타</c:otherwise>
+								</c:choose>
+						</span>
 						</span>
 					</div>
 				</div>
