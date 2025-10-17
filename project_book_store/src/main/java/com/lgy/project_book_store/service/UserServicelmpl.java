@@ -52,6 +52,12 @@ public class UserServicelmpl implements UserService {
             "com.lgy.project_book_store.dao.UserDAO.withdraw", param);
     }
 
+    @Override
+    public int withdrawSocial(Map<String, Object> param) {
+    	return sqlSession.delete(
+            "com.lgy.project_book_store.dao.UserDAO.withdrawSocial", param);
+    }
+    
     //아이디 중복 체크
     @Override
     public int checkId(String id) {
@@ -78,6 +84,17 @@ public class UserServicelmpl implements UserService {
 		sqlSession.update(
 				"com.lgy.project_book_store.dao.UserDAO.resetLoginFail", user_id);
 	}
-}
 
+	// 이메일로 회원 조회
+	@Override
+    public UserDTO getUserByEmail(String email) {
+        return sqlSession.selectOne("com.lgy.project_book_store.dao.UserDAO.getUserByEmail", email);
+    }
+	
+	// 소셜 로그인 회원 등록
+    @Override
+    public void insertSocialUser(Map<String, String> param) {
+        sqlSession.insert("com.lgy.project_book_store.dao.UserDAO.insertSocialUser", param);
+    }
+}
 
