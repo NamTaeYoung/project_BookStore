@@ -20,7 +20,10 @@ public interface UserService {
 
     // 회원 탈퇴
     int withdraw(Map<String, String> param);
-
+    
+    // 소셜 로그인 회원 탈퇴
+    int withdrawSocial(Map<String, Object> param);
+    
     // 아이디 중복 체크
     int checkId(String id);
     
@@ -32,4 +35,10 @@ public interface UserService {
     
     // 로그인 시도횟수 초기화
     void resetLoginFail(String user_id);
+    
+    //이메일로 기존 회원 조회
+    UserDTO getUserByEmail(String email);
+    
+    //소셜 신규 회원 등록
+    void insertSocialUser(Map<String, String> param);
 }
