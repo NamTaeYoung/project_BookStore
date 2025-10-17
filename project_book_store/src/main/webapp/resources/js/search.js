@@ -43,27 +43,50 @@ let searchQuery = '';
 // 장바구니 버튼 이벤트 등록
 function bindCartButtons() {
   document.querySelectorAll(".cart-btn").forEach(btn => {
+    btn.onclick = null; // 기존 이벤트 제거
     btn.addEventListener("click", function() {
       const bookId = this.dataset.bookId;
-      if(!confirm("장바구니에 담으시겠습니까?")) return;
+      console.log("📌 버튼 클릭됨 -> bookId:", bookId, "loginId:", loginId);
 
-      // fetch URL 수정
+      // 로그인 체크
+      if(!loginId || loginId.trim() === "") {
+        alert("로그인 후 이용해주세요.");
+        console.log("⚠ 로그인 안됨 -> 로그인 페이지로 이동");
+        window.location.href = `${ctx}/login`;
+        return;
+      }
+
+      if(!confirm("장바구니에 담으시겠습니까?")) {
+        console.log("❌ 장바구니 담기 취소");
+        return;
+      }
+
       fetch(`${ctx}/cartAdd`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-        body: `book_id=${bookId}`
+        body: `book_id=${encodeURIComponent(bookId)}`
       })
-      .then(res => res.text())
+      .then(res => {
+        console.log("🔹 Fetch 응답 상태:", res.status, res.statusText);
+        return res.text();
+      })
       .then(data => {
-        alert("장바구니에 담겼습니다!"); // 단순 알림 처리
+        console.log("🔹 Fetch 응답 데이터:", data);
+        const msg = data.trim();
+        if(msg === "success"){
+          alert("✅ 장바구니에 담겼습니다!");
+        } else {
+          alert("⚠ " + msg);
+        }
       })
       .catch(err => {
-        console.error(err);
+        console.error("❌ Fetch 에러:", err);
         alert("장바구니 담기 실패");
       });
     });
   });
 }
+
 
 // apply 함수: 리스트 렌더 후 버튼 이벤트 등록
 function apply(){
