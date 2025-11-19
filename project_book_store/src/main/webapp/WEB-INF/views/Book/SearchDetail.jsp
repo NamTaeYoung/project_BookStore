@@ -166,8 +166,6 @@
   			</div>
 
 
-  		</div>
-
   <!-- 리뷰 작성 -->
   <div class="review-write-section">
     <c:choose>
